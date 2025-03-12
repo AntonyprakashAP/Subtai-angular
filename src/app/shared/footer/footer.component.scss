@@ -1,0 +1,47 @@
+footer {
+    /* position:absolute; */
+    background-color: #052B56;
+    border-radius: 20px;
+    padding: 5rem 0 20px 0;
+  }
+  
+  .footer-header {
+    color: white;
+  }
+  
+  .footer-list {
+    list-style-type: none;
+  }
+  
+  .footer-header {
+    margin-left: 35px;
+  }
+  
+  .footer-list-item a {
+    text-decoration: none;
+    color: white;
+  }
+  
+  .copudiv {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .copy-rights {
+    margin-top: 20px;
+    color: white;
+  }
+  
+  .copy-rights a{
+    text-decoration: none;
+    color: white;
+  }
+  
+  .media-icons{
+    width: 170px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
