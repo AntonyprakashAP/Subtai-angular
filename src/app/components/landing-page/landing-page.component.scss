@@ -1,4 +1,4 @@
-.main-content{
+.main-content {
     background-color: #2E395A;
     color: white;
 }
@@ -75,12 +75,19 @@
 .btnMute {
     border-radius: 50%;
     position: absolute;
-    bottom: 48px;
-    right: -28px;
-    height: 20px;
-    background-color: #000000;
-    color: white;
+    bottom: 22px;
+    right: 18px;
+    z-index:  5;
     border: none;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+}
+
+.btnVol{
+    height:20px; 
+    width: 20px;
+    cursor: pointer;
 }
 
 .specContent {
@@ -273,6 +280,7 @@
     top: 20px;
     color: white;
     left: 40px;
+    width: 300px;
 }
 
 .futuredSection {
@@ -313,7 +321,7 @@
     margin-bottom: 5rem;
     animation-name: slideFromLeft;
     animation-duration: 3s;
-    animation-timeline:inherit;
+    animation-timeline: inherit;
 }
 
 .langCenter {
@@ -422,16 +430,23 @@
     }
 }
 
-@media (min-width: 1024px) {
+
+@media (min-width: 1440px) {
     .subtOverAll {
-        padding-left: 150px;
+        padding-left: 180px;
+    }
+
+    .subtHeader{
+        margin-left: 25%;
     }
     .subtcont:nth-child(1) .subcontent {
         height: 8rem;
     }
+
     .subPara {
         width: 40rem;
     }
+
     .subcontent {
         background-color: #b2d8f6;
         height: 8rem;
@@ -439,43 +454,88 @@
         border-radius: 39px;
         margin: 0 10px 0 10px;
         width: 50rem;
-    }    
+    }
+
     .futured {
         margin-left: 20%;
     }
-   
-    
+
+
 }
+
+@media (max-width: 1024px) {
+    .subtOverAll {
+        padding-left: 0;
+    }
+
+    .subtcont:nth-child(1) .subcontent {
+        height: 8rem;
+    }
+
+    .subPara {
+        width: 40rem;
+    }
+
+    .subcontent {
+        background-color: #b2d8f6;
+        height: 8rem;
+        padding: 15px 0 0 30px;
+        border-radius: 39px;
+        margin: 0 10px 0 10px;
+        width: 50rem;
+    }
+
+    .futured {
+        margin-left: -10px;
+    }
+
+    .heroRightVideo {
+        width: 400px;
+    }
+
+    .btnMute {
+        bottom: 7rem;
+        right: 2px;
+        height: 15px;
+        width: 15px;
+    }
+}
+
 @media (max-width: 768px) {
+
     // .subtOverAll {
     //     // padding-left: 80px;
     // }
     .subPara {
         width: 30rem;
     }
+
     .subcontent {
         height: 9rem;
         padding: 15px 0 0 30px;
         width: 50rem;
-    } 
+    }
+
     .heroRight {
         margin-top: 5rem;
         text-align: end;
         padding: 0 100px 0 50px;
-    }  
+    }
 
     .futured {
         margin-left: 0;
     }
+
     .futuredHead {
         position: relative;
         top: 20px;
         left: 10px;
     }
-    
-    .futuredItem:nth-child(4){
+
+    .futuredItem:nth-child(4) {
         margin-top: 10px;
     }
+
     .futuredSection {
         top: 40px;
         width: 700px;
@@ -484,40 +544,56 @@
         text-align: center;
         /* display: flex; */
     }
-  .langCenter{
-    display: none;
-  }
-  .langRightSide{
-    margin-bottom: 10px;
-    text-align: center;
-    padding-left: 3rem;
-    margin-top: 10px;
-  }
+
+    .langCenter {
+        display: none;
+    }
+
+    .langRightSide {
+        margin-bottom: 10px;
+        text-align: center;
+        padding-left: 12rem;
+        margin-top: 0;
+    }
+    .langLeftSide {
+        margin-top:0;
+        margin-bottom: 1rem;
+    }
+
+    .btnMute {
+        bottom: 25px;
+        right: 7rem;
+    }
+     
 }
 
 @media (max-width: 425px) {
     .subPara {
         width: 15rem;
     }
+
     .subcontent {
         height: 13rem;
         padding: 15px 0 0 30px;
         width: 20rem;
-    }    
+    }
+
     .subtcont:nth-child(1) .subcontent {
         height: 9rem;
     }
+
     .futured {
         margin-left: 10px;
         margin-right: 0;
     }
+
     .futuredHead {
         position: relative;
         top: 20px;
         left: 0;
         margin: 0;
     }
-    
+
     .futuredSection {
         top: 40px;
         width: 25rem;
@@ -526,20 +602,36 @@
         text-align: center;
         /* display: flex; */
     }
+
     .heroRight {
         margin-top: 5rem;
         text-align: end;
         padding: 0 15px 0 0;
-    }  
-    .heroRightVideo{
+    }
+
+    .heroRightVideo {
         width: 380px;
     }
+
     .demoLeftCricle {
         top: 100px;
         left: 120px;
-    
+
     }
-    .langCenter{
+
+    .langCenter {
         display: none;
-      }
+    }
+    .langRightSide {
+        margin-bottom: 10px;
+        text-align: center;
+        padding-left:3rem;
+        margin-top: 0;
+    }
+
+    .btnMute {
+        bottom: 25px;
+        right: 2rem;
+    }
+     
 }

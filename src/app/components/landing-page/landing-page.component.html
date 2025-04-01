@@ -25,9 +25,14 @@
                 <p class="heroNav">
                     Auto Cation Generator &#11164; Subt Ai
                 </p>
-                <video src="assets/video/heroVideo.mp4" type="video/mp4" width="500" controls class="heroRightVideo">
+                <video src="assets/video/heroVideo.mp4" type="video/mp4" width="500"  autoplay [muted]="muted"  class="heroRightVideo">
                     Your browser does not support the video tag.
                 </video>
+
+                <div class="btnMute">
+                   <img [src]="muted ? 'assets/image/mute.png' : 'assets/image/volume.png'" alt="mute" (click)="toggleForVideoMute()" class="btnVol">
+                    
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,74 @@
+.heroSection{
+    background-image: url(../../../../public/assets/image/Service.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    color: white;
+  font-family: "Outfit", sans-serif;
+
+}
+
+.heroContent{
+    margin-top: 150px;
+    margin-right: 0;
+    text-align: center;
+}
+
+.herotop{
+    font-size: 6rem;
+    font-weight: bold;
+}
+
+.herobottom{
+    font-size: 1.5rem;
+    width: 400px;
+    text-align: center;
+    margin-left: 38.5%;
+}
+
+.ServiceSection{
+    background-color: #F0F8FF;
+    position: relative;
+    height: 800px;
+    padding: 20px;
+    top: -200px;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px ;
+}
+
+.paraForServices{
+    font-family: "Courier Prime", monospace;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 90px;
+
+    margin-bottom: 500px; 
+}
+
+
+// @media (min-width: 1440px) {
+   
+
+// }
+
+@media (max-width: 1024px) {
+    
+.herobottom{
+    margin-left: 30%;
+}
+}
+
+@media (max-width: 768px) {
+
+    .herobottom{
+        margin-left: 23%;
+    } 
+}
+
+@media (max-width: 425px) {
+    .herobottom{
+        margin-left: 2%;
+    }
+}

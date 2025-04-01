@@ -1,0 +1,85 @@
+.heroSection {
+    background-image: url(../../../../public/assets/image/contact.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    color: white;
+    font-family: "Outfit", sans-serif;
+
+}
+
+.heroContent {
+    margin-top: 150px;
+    margin-right: 0;
+}
+
+.heroMid {
+    width: 4px;
+    height: 300px;
+    background-color: white;
+}
+
+.heroLeft {
+    font-size: 5rem;
+    font-weight: bold;
+    /* letter-spacing: 1rem; */
+    margin-top: 80px;
+}
+
+.heroRight {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-top: 80px;
+}
+
+.formsection {
+    background-color: #F0F8FF;
+    height: 800px;
+    width: 100%;
+}
+
+.formContainer {
+    background-color: #F0F8FF;
+    height: 600px;
+    width: 1100px;
+    border: 2px solid #CDCBCB;
+    position: relative;
+    top: -280px;
+    border-radius: 20px;
+    padding: 50px;
+    margin-left: 100px;
+
+}
+
+.inputfleid {
+    width: 400px;
+}
+
+.secondRow {
+    margin-top: 30px;
+}
+
+.textarea {
+    width: 910px;
+}
+
+.btncontainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.formSection {
+    padding-left: 50px;
+}
+
+.btnforsumbit {
+    background-color: #0C5A81;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
+}

@@ -11,6 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class LandingPageComponent {
   selected: number | null = 0;
+
+  muted:boolean = true;
+
   data = [
     {
       header: "What is a subtitle generator?",
@@ -40,5 +43,14 @@ export class LandingPageComponent {
   ];
   toggle(index: number) {
     this.selected = this.selected === index ? null : index;
+  }
+
+  toggleForVideoMute(){
+    console.log("I am Working")
+    if(this.muted != true){
+      this.muted = true;
+    } else {
+      this.muted = false;
+    }
   }
 }
