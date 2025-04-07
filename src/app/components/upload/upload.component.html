@@ -1,1 +1,75 @@
-<p>upload works!</p>
+<div class="upload-container">
+    <!-- Loading Spinner -->
+  
+    <app-header></app-header>
+  
+    <div *ngIf="isUploaded; else uploadForm" class="container uploaded-section">
+      <div class="row video-section">
+        <div class="col-lg-7">
+          <video id="video" controls width="500px" class="vfp"></video>
+        </div>
+        <div class="col-lg-5 down-section">
+          <div *ngIf="isGenerated; else genOptions">
+            <div class="downVideo"></div>
+            <div class="downDoc"></div>
+          </div>
+  
+          <ng-template #genOptions>
+            <div class="dropdownBtn">
+              <label for="from">From :</label>
+              <select class="form-select form-select-sm optionFrom" id="from">
+                <option selected>Select Language</option>
+                <option value="1">English</option>
+              </select>
+  
+              <label for="to">To :</label>
+              <select
+                class="form-select form-select-sm optionTo"
+                id="to"
+                [value]="selectedLang"
+                (change)="handleChange($event)"
+              >
+                <option
+                  *ngFor="let item of languages"
+                  [value]="item"
+                  class="lang"
+                >
+                  {{ item }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" (click)="handleGenerate()" class="genaBtn">
+              Generate
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  
+    <ng-template #uploadForm>
+      <div class="uploading">
+        <h1 class="upTitle">
+          Upload Video Here, That you can add caption for better understanding
+        </h1>
+        <button class="btn upBtn" (click)="onButtonClick()">Upload Video</button>
+        <input
+          type="file"
+          accept="video/mp4"
+          (change)="handleOnChange($event)"
+          hidden
+          #inputFileRef
+        />
+        <h2 class="subttlUp">or Drop a file</h2>
+        <p class="pasUp">paste url <u>here</u></p>
+        <p class="tremsUp">
+          By uploading a video or URL you agree to our
+          <u>Terms of Service</u>.<br />
+          To learn more about how subtai handles your personal data, check our
+          <u>Privacy Policy</u>.
+        </p>
+      </div>
+    </ng-template>
+  
+    <app-footer></app-footer>
+  </div>
+  

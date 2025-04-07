@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import { ServiceComponent } from './components/service/service.component';
 import { PricingComponent } from './components/pricing/pricing.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { UploadComponent } from './components/upload/upload.component';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,10 @@ export const routes: Routes = [
         path:"pricing",
         component:PricingComponent,
         title:"SubtAi - Pricing"
+    },
+    {
+        path:"uplod",
+        component:UploadComponent
     }
 ];
 @NgModule({

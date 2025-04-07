@@ -1,7 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { CommonModule } from '@angular/common';
+
+const ALLOWED_FILE_TYPES = [
+  'video/mp4',
+  'video/webm',
+  'video/ogg',
+];
 
 @Component({
   selector: 'app-landing-page',
@@ -10,8 +16,20 @@ import { CommonModule } from '@angular/common';
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {
+
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+
+  constructor(){
+    
+  }
+
   selected: number | null = 0;
 
+  allowedFileTypes = ALLOWED_FILE_TYPES;
+
+  isUploading = false;
+  fileUrl!: string | null;
+  uploadFile!: File | null;
   muted:boolean = true;
 
   data = [
@@ -41,6 +59,7 @@ export class LandingPageComponent {
         "Yes, adding subtitles significantly improves video engagement by making content accessible to a wider audience, including those watching without sound. Subtitles also help viewers retain information and stay focused longer.",
     },
   ];
+
   toggle(index: number) {
     this.selected = this.selected === index ? null : index;
   }
@@ -53,4 +72,26 @@ export class LandingPageComponent {
       this.muted = false;
     }
   }
+
+  handleChange(event: any) {
+    const file = event.target.files[0] as File;
+    this.fileUrl = URL.createObjectURL(file);
+    this.uploadFile = file;
+    console.log(file);
+
+  }
+
+  handleRemovesFile() {
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = null;
+    }
+
+    this.uploadFile = null;
+    this.fileUrl = null;
+  }
+
+  handleUploadFile() {
+    // logic to upload file
+  }
+
 }
