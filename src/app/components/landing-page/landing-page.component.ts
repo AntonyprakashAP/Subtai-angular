@@ -2,6 +2,10 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { CommonModule } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
+
 
 const ALLOWED_FILE_TYPES = [
   'video/mp4',
@@ -11,7 +15,7 @@ const ALLOWED_FILE_TYPES = [
 
 @Component({
   selector: 'app-landing-page',
-  imports: [HeaderComponent,FooterComponent,CommonModule],
+  imports: [HeaderComponent,FooterComponent,CommonModule,ToastModule],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
@@ -19,9 +23,10 @@ export class LandingPageComponent {
 
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
-  constructor(){
-    
-  }
+  constructor( 
+    private messageService:MessageService,
+    private router:Router
+  ){}
 
   selected: number | null = 0;
 
@@ -77,8 +82,13 @@ export class LandingPageComponent {
     const file = event.target.files[0] as File;
     this.fileUrl = URL.createObjectURL(file);
     this.uploadFile = file;
-    console.log(file);
 
+    if(this.uploadFile !== null){
+      this.router.navigate(['/upload'],{state:{video:file}})
+    }
+    console.log(file);
+    this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Sent'});
+    
   }
 
   handleRemovesFile() {
@@ -91,7 +101,7 @@ export class LandingPageComponent {
   }
 
   handleUploadFile() {
-    // logic to upload file
+
   }
 
 }

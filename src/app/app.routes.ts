@@ -28,7 +28,7 @@ export const routes: Routes = [
         title:"SubtAi - Pricing"
     },
     {
-        path:"uplod",
+        path:"upload",
         component:UploadComponent
     }
 ];

@@ -1,22 +1,33 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
-import { FooterComponent } from '../../shared/footer/footer.component';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { url } from 'inspector';
+import { AuthService } from '../../_service/auth.service';
 
 @Component({
   selector: 'app-upload',
   imports: [
     HeaderComponent,
-    FooterComponent,
     CommonModule
   ],
   templateUrl: './upload.component.html',
-  styleUrl: './upload.component.scss'
+  styleUrl: './upload.component.scss',
+  providers: [AuthService],
 })
-export class UploadComponent {
+export class UploadComponent implements OnInit {
+
+
+  @ViewChild('inputFileRef') inputFileRef!: ElementRef;
+
   isUploaded = false;
+  video: SafeUrl | null = null;
   isGenerated = false;
   selectedLang: string = '';
+  videoFile: File | null = null;
+  videoToDisplay: SafeUrl | null = null;
+  loading = false;
   languages: string[] = ["Arabic-ar",
     "Bengali-bn",
     "Chinese-zh",
@@ -39,9 +50,30 @@ export class UploadComponent {
     "Tamil-ta",
     "Telugu-te",
     "Turkish-tr",
-    "Urdu-ur"]; 
+    "Urdu-ur"];
 
-  @ViewChild('inputFileRef') inputFileRef!: ElementRef;
+
+  selectedFile!: File;
+  videoUrl: string = '';
+  isUploading = false;
+  uploadError = '';
+
+  constructor(
+    private router: Router,
+    private subtitleService: AuthService,
+    private sanitizer: DomSanitizer
+  ) { }
+
+  ngOnInit(): void {
+    // if (history !== undefined) {
+    //   const data = history.state.video;
+    //   if (data != null) {
+    //     this.isUploaded = true;
+    //     this.video = URL.createObjectURL(data);
+
+    //   }
+    // }
+  }
 
   onButtonClick(): void {
     this.inputFileRef.nativeElement.click();
@@ -51,7 +83,7 @@ export class UploadComponent {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file && file.type === 'video/mp4') {
       this.isUploaded = true;
-      // You can do more like setting up the video source
+      this.video = file;
     }
   }
 
@@ -63,4 +95,54 @@ export class UploadComponent {
   handleGenerate(): void {
     this.isGenerated = true;
   }
+
+  async fetchData() {
+    if (!this.videoFile) return;
+
+    this.loading = true;
+
+    // try {
+    //   const videoUrl = await this.subtitleService.fetchSubtitledVideo(
+    //     this.videoFile,
+    //     this.selectedLang
+    //   );
+
+    //   this.videoToDisplay = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
+    // } catch (error) {
+    //   console.error('Error fetching video:', error);
+    // } finally {
+    //   this.loading = false;
+    // }
+  }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.videoFile = input.files[0];
+    }
+  }
+
+  async handleUpload() {
+    this.isUploading = true;
+    this.uploadError = '';
+
+    try {
+      const finalVideoUrl = await this.subtitleService.uploadAndProcessVideo(this.selectedFile);
+      this.videoUrl = finalVideoUrl;
+      console.log('Video uploaded successfully:', this.videoUrl);
+    } catch (err: any) {
+      this.uploadError = err.message || 'Upload failed';
+      console.error(err);
+    } finally {
+      this.isUploading = false;
+    }
+  }
+
+  handleFileSelection(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input?.files?.length) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
 }
