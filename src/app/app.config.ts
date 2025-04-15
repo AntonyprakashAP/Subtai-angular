@@ -9,10 +9,12 @@ import { MessageService } from 'primeng/api';
 import Aura from '@primeng/themes/aura';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }),provideHttpClient(),  provideRouter(routes), provideAnimationsAsync(), provideClientHydration(withEventReplay()), MessageService, providePrimeNG({
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }),provideHttpClient(), provideAnimations(),NgxSpinnerService, provideRouter(routes), provideAnimationsAsync(), provideClientHydration(withEventReplay()), MessageService, providePrimeNG({
     theme: {
       preset: Aura
     }
