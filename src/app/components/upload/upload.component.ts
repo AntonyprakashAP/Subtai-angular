@@ -28,7 +28,7 @@ export class UploadComponent implements OnInit {
   isGenerated = false;
   selectedLang: string = '';
   videoFile: File | null = null;
-  videoToDisplay: SafeUrl | null = null;
+  // videoToDisplay: SafeUrl | null = null;
   loading = false;
   languages: string[] = [
     "Arabic-ar",
@@ -76,12 +76,17 @@ export class UploadComponent implements OnInit {
         this.video = URL.createObjectURL(data);
         this.videoFile = data;
         // this.spinner.show(); 
+        if (this.videoFile != null) {
+          this.handleUpload(this.videoFile)
+        }
       }
     }
   }
 
   onButtonClick(): void {
-    this.inputFileRef.nativeElement.click();
+    const file = this.inputFileRef.nativeElement.click();
+    console.log(file);
+    
   }
 
   handleOnChange(event: Event): void {
@@ -103,7 +108,8 @@ export class UploadComponent implements OnInit {
 
     if (this.videoFile) {
       console.log("File founded")
-      this.handleUpload(this.videoFile);
+      // this.handleUpload(this.videoFile);
+      this.fetchData()
     }
     console.log("end of api call");
 
@@ -112,44 +118,49 @@ export class UploadComponent implements OnInit {
   async handleUpload(data: File) {
     this.isUploading = true;
     this.uploadError = '';
+    this.loading = true;
     try {
       console.log("try block working");
 
-      const finalVideoUrl = await this.subtitleService.uploadAndProcessVideo(data, this.selectedLang);
+      const response = await this.subtitleService.uploadAndProcessVideo(data, this.selectedLang);
       console.log("after try block executing");
-
-      this.videoUrl = finalVideoUrl;
       console.log('Video uploaded successfully:', this.videoUrl);
-      // if(this.videoUrl){
-      // this.fetchData()
-      // }
+      console.log(response);
+
+      if (response != null) {
+        this.loading = false
+      }
 
     } catch (err: any) {
       this.uploadError = err.message || 'Upload failed';
-      // console.error(err)
-      this.loading = false;
-;
+      // console.error(err);
+    } finally {
+
     }
   }
 
-  // async fetchData() {
-  //   if (!this.videoFile) return;
+  async fetchData() {
+    if (!this.videoFile) return;
 
-  //   this.loading = true;
+    this.loading = true;
 
-  //   try {
-  //     const videoUrl = await this.subtitleService.fetchSubtitledVideo(
-  //       this.videoFile,
-  //       this.selectedLang
-  //     );
+    try {
+      const finalVideoUrl = await this.subtitleService.fetchSubtitledVideo(
+        this.videoFile,
+        this.selectedLang
+      );
 
-  //     this.videoToDisplay = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
-  //   } catch (error) {
-  //     console.error('Error fetching video:', error);
-  //   } finally {
-  //     this.loading = false;
-  //   }
-  // }
+      if (finalVideoUrl != null) {
+        console.log(finalVideoUrl);
+
+        this.video = this.sanitizer.bypassSecurityTrustResourceUrl(finalVideoUrl);
+        this.videoUrl = finalVideoUrl;
+        this.loading = false
+      }
+    } catch (error) {
+      console.error('Error fetching video:', error);
+    }
+  }
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -158,7 +169,15 @@ export class UploadComponent implements OnInit {
     }
   }
 
-
+  downloadVideo() {
+    const a = document.createElement('a');
+    if (this.video) {
+      a.href = this.videoUrl as string;
+      a.click();
+      console.log(a);
+      
+    }
+  }
 
   handleFileSelection(event: Event) {
     const input = event.target as HTMLInputElement;
