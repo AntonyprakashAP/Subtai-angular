@@ -4,6 +4,7 @@ from google.cloud import speech_v1p1beta1 as speech
 from google.cloud import translate_v2 as translate
 from dotenv import load_dotenv
 import os
+import io
 import uuid
 
 load_dotenv()
@@ -120,27 +121,34 @@ def transcribe_route():
     try:
         results, _ = transcribe_audio(audio_path, source_lang)
         _, srt_path = generate_translated_srt(results, source_lang, target_lang, write_file=True)
+        # print("srt_path : ",srt_path,"audio path",audio_path)
 
-        if srt_path and os.path.exists(srt_path):
+        # if srt_path and os.path.exists(srt_path):
 
-            @after_this_request
-            def cleanup(response):
-                try:
-                    if os.path.exists(audio_path):
-                        os.remove(audio_path)
-                    if os.path.exists(srt_path):
-                        os.remove(srt_path)
-                except Exception as cleanup_error:
-                    print(f"Cleanup error: {cleanup_error}")
-                return response
+        with open(srt_path, 'rb') as f:
+            srt_data = f.read()
 
-            return send_file(
-                srt_path,
-                as_attachment=True,
-                download_name=os.path.basename(srt_path)
-            )
+        @after_this_request
+        def cleanup(response):
+            try:
+                if os.path.exists(audio_path):
+                    os.remove(audio_path)
 
-        return jsonify({"error": "SRT file generation failed"}), 500
+                if os.path.exists(srt_path):
+                    os.remove(srt_path)
+
+            except Exception as cleanup_error:
+                print(f"Cleanup error: {cleanup_error}")
+            return response
+
+        return send_file(
+            io.BytesIO(srt_data),
+            mimetype='text/plain',
+            as_attachment=True,
+            download_name=os.path.basename(srt_path)
+        )
+
+        # return jsonify({"error": "SRT file generation failed"}), 500
 
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500

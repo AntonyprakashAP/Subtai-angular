@@ -174,28 +174,25 @@ export class UploadComponent implements OnInit {
   // }
 
   private async mergeVideoWithSubtitles(srtBlob: Blob) {
-    await this.loadFFmpeg(); //  FFmpeg is loaded
+    await this.loadFFmpeg();
 
     const inVid = 'input.mp4';
     const inSrt = 'subs.srt';
     const outVid = 'out.mp4';
-    const fontPath = 'tmp/Roboto-Regular.ttf'; // Add a font file into /tmp
+    const fontPath = 'tmp/Roboto-Regular.ttf'; 
 
-    // Write the video file and subtitle to the virtual FS
     this.ffmpeg.FS('writeFile', inVid, await fetchFile(this.videoFile));
     this.ffmpeg.FS('writeFile', inSrt, await fetchFile(srtBlob));
     this.ffmpeg.FS('writeFile', fontPath, await fetchFile('/assets/fonts/Roboto-Regular.ttf'));
 
-    // Add subtitles using the correct filter (no need to convert to .ass)
     await this.ffmpeg.run(
       '-i', inVid,
       '-vf', `subtitles=${inSrt}:fontsdir=/tmp:force_style='FontName=Roboto,FontSize=24,PrimaryColour=&H00FFFFFF'`,
-      '-c:v', 'libx264', // safer encoder for compatibility
+      '-c:v', 'libx264', 
       '-c:a', 'copy',
       outVid
     );
 
-    // Create the final blob and downloadable link
     const data = this.ffmpeg.FS('readFile', outVid);
     const mergedBlob = new Blob([data.buffer], { type: 'video/mp4' });
     this.finalVideoUrl = URL.createObjectURL(mergedBlob);
@@ -207,7 +204,6 @@ export class UploadComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
 
-    // Clean up FS
     this.ffmpeg.FS('unlink', inVid);
     this.ffmpeg.FS('unlink', inSrt);
     this.ffmpeg.FS('unlink', fontPath);
