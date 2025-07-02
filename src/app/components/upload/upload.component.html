@@ -9,7 +9,7 @@
   <div *ngIf="isUploaded; else uploadForm" class="container uploaded-section">
     <div class="row video-section">
       <div class="col-lg-7 video-wrapper">
-        <video id="videoDown" [src]="video" controlsList="nodownload" controls width="500px" class="vfp"></video>
+        <video id="videoDown"  #videoPlayer [src]="video" controlsList="nodownload" controls width="500px" class="vfp"></video>
         <div class="video-overlay" id="videoOverlay" *ngIf="loading">
           <div class="spinner"></div>
         </div>

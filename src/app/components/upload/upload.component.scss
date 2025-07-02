@@ -190,3 +190,7 @@ video {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+video::-webkit-media-text-track-display {
+  font-size: 0.5em; /* Larger text */
+}
