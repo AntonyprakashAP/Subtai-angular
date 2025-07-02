@@ -23,19 +23,23 @@ def seconds_to_srt_time(seconds: float) -> str:
     mins = int((seconds % 3600) // 60)
     secs = int(seconds % 60)
     millis = int(round((seconds - int(seconds)) * 1000))
-    return f"{hrs:02}:{mins:02}:{secs:02},{millis:03}"
+    return f"{hrs:02}:{mins:02}:{secs:02}.{millis:03}"
 
 
-def create_srt_entry(sequence_number: int, start_time_str: str, end_time_str: str, text: str) -> str:
-    return f"{sequence_number}\n{start_time_str} --> {end_time_str}\n{text}\n\n"
-
+def create_srt_entry( start_time_str: str, end_time_str: str, text: str) -> str:  #sequence_number: int,
+    return f"\n{start_time_str} --> {end_time_str}\n{text}\n\n"
+# {sequence_number}
 
 def write_srt_file(filename: str, subtitles_data: list[dict]) -> None:
     with open(filename, "w", encoding="utf-8") as f:
+
+        f.write("WEBVTT")
+        f.write("\n\n")  
+
         for entry in subtitles_data:
             f.write(
                 create_srt_entry(
-                    entry["sequence"],
+                    # entry["sequence"],
                     entry["start_time"],
                     entry["end_time"],
                     entry["text"],
@@ -83,7 +87,7 @@ def generate_translated_srt(results, source_lang: str, target_lang: str, *, writ
 
         subtitles.append(
             {
-                "sequence": sequence,
+                # "sequence": sequence,
                 "start_time": start_str,
                 "end_time": end_str,
                 "text": translated_text,
@@ -93,14 +97,14 @@ def generate_translated_srt(results, source_lang: str, target_lang: str, *, writ
 
     srt_string = "".join(
         create_srt_entry(
-            sub["sequence"], sub["start_time"], sub["end_time"], sub["text"]
+             sub["start_time"], sub["end_time"], sub["text"] #sub["sequence"],
         )
         for sub in subtitles
     ).strip()
 
     srt_path = None
     if write_file:
-        srt_filename = f"{uuid.uuid4().hex}.srt"
+        srt_filename = f"{uuid.uuid4().hex}.vtt" # if you want use srt file type change here and change the sequence
         srt_path = os.path.join(SRT_FOLDER, srt_filename)
         write_srt_file(srt_path, subtitles)
 

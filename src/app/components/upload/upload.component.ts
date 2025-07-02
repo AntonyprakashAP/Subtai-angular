@@ -26,7 +26,7 @@ export class UploadComponent implements OnInit {
 
   @ViewChild('inputFileRef') inputFileRef!: ElementRef;
 
-  ffmpeg = createFFmpeg({ log: true });
+  ffmpeg = createFFmpeg({ log: false });
   loading = false;
   videoFile!: File;
   audioBlobUrl: string = '';
@@ -118,11 +118,16 @@ export class UploadComponent implements OnInit {
 
     try {
       const srtBlob = await this.http.post('http://localhost:5000/transcribe', formData, {
-        responseType: 'blob'
+        responseType: 'text'
       }).toPromise();
 
-      await this.mergeVideoWithSubtitles(srtBlob as Blob);
+      // console.log(srtBlob);
+
+      await this.mergeVideoWithSubtitles2(srtBlob);
+
       this.isGenerated = true;
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Subtitle generation successfully' });
+
     } catch (err) {
       console.error('Subtitle generation failed:', err);
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Subtitle generation failed' });
@@ -173,13 +178,13 @@ export class UploadComponent implements OnInit {
   //   this.ffmpeg.FS('unlink', outVid);
   // }
 
-  private async mergeVideoWithSubtitles(srtBlob: Blob) {
+  private async mergeVideoWithSubtitles1(srtBlob: Blob) {
     await this.loadFFmpeg();
 
     const inVid = 'input.mp4';
     const inSrt = 'subs.srt';
     const outVid = 'out.mp4';
-    const fontPath = 'tmp/Roboto-Regular.ttf'; 
+    const fontPath = 'tmp/Roboto-Regular.ttf';
 
     this.ffmpeg.FS('writeFile', inVid, await fetchFile(this.videoFile));
     this.ffmpeg.FS('writeFile', inSrt, await fetchFile(srtBlob));
@@ -188,7 +193,7 @@ export class UploadComponent implements OnInit {
     await this.ffmpeg.run(
       '-i', inVid,
       '-vf', `subtitles=${inSrt}:fontsdir=/tmp:force_style='FontName=Roboto,FontSize=24,PrimaryColour=&H00FFFFFF'`,
-      '-c:v', 'libx264', 
+      '-c:v', 'libx264',
       '-c:a', 'copy',
       outVid
     );
@@ -209,4 +214,25 @@ export class UploadComponent implements OnInit {
     this.ffmpeg.FS('unlink', fontPath);
     this.ffmpeg.FS('unlink', outVid);
   }
+
+  private async mergeVideoWithSubtitles2(vttFile: any) {
+
+    console.log(typeof(vttFile),":", vttFile);
+    
+
+    let videoId = document.getElementById("videoDown") as HTMLVideoElement;
+    const blob = new Blob([vttFile],{type:'text/vtt'});
+    const vttUrl = URL.createObjectURL(blob)
+
+    const track = document.createElement('track');
+
+    track.kind = 'subtitles';
+    track.label = this.selectedLang;
+    track.srclang = this.selectedLang
+    track.src = vttUrl;
+    track.default = true;
+
+    videoId.appendChild(track);
+  }
+
 }
