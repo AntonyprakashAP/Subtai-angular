@@ -114,3 +114,21 @@
 .video-section{
   margin-top: 20vh;
 }
+
+.loader{
+  position: absolute;
+  top: 90px;
+  z-index: 99;
+  left: 105px;
+  background-color: black;
+  height: 270px;
+  width: 475px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img{
+     height: 130px;
+  }
+}
+

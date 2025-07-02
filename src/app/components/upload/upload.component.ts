@@ -3,14 +3,16 @@ import { HeaderComponent } from '../../shared/header/header.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { url } from 'inspector';
 import { AuthService } from '../../_service/auth.service';
+import { NgxSpinnerComponent, NgxSpinnerService } from 'ngx-spinner';
+
 
 @Component({
   selector: 'app-upload',
   imports: [
     HeaderComponent,
-    CommonModule
+    CommonModule,
+    NgxSpinnerComponent
   ],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss',
@@ -28,7 +30,8 @@ export class UploadComponent implements OnInit {
   videoFile: File | null = null;
   videoToDisplay: SafeUrl | null = null;
   loading = false;
-  languages: string[] = ["Arabic-ar",
+  languages: string[] = [
+    "Arabic-ar",
     "Bengali-bn",
     "Chinese-zh",
     "English-en",
@@ -61,18 +64,20 @@ export class UploadComponent implements OnInit {
   constructor(
     private router: Router,
     private subtitleService: AuthService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
-    // if (history !== undefined) {
-    //   const data = history.state.video;
-    //   if (data != null) {
-    //     this.isUploaded = true;
-    //     this.video = URL.createObjectURL(data);
-
-    //   }
-    // }
+    if (history !== undefined) {
+      const data = history.state.video;
+      if (data != null) {
+        this.isUploaded = true;
+        this.video = URL.createObjectURL(data);
+        this.videoFile = data;
+        // this.spinner.show(); 
+      }
+    }
   }
 
   onButtonClick(): void {
@@ -94,26 +99,57 @@ export class UploadComponent implements OnInit {
 
   handleGenerate(): void {
     this.isGenerated = true;
-  }
-
-  async fetchData() {
-    if (!this.videoFile) return;
-
     this.loading = true;
 
-    // try {
-    //   const videoUrl = await this.subtitleService.fetchSubtitledVideo(
-    //     this.videoFile,
-    //     this.selectedLang
-    //   );
+    if (this.videoFile) {
+      console.log("File founded")
+      this.handleUpload(this.videoFile);
+    }
+    console.log("end of api call");
 
-    //   this.videoToDisplay = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
-    // } catch (error) {
-    //   console.error('Error fetching video:', error);
-    // } finally {
-    //   this.loading = false;
-    // }
   }
+
+  async handleUpload(data: File) {
+    this.isUploading = true;
+    this.uploadError = '';
+    try {
+      console.log("try block working");
+
+      const finalVideoUrl = await this.subtitleService.uploadAndProcessVideo(data, this.selectedLang);
+      console.log("after try block executing");
+
+      this.videoUrl = finalVideoUrl;
+      console.log('Video uploaded successfully:', this.videoUrl);
+      // if(this.videoUrl){
+      // this.fetchData()
+      // }
+
+    } catch (err: any) {
+      this.uploadError = err.message || 'Upload failed';
+      // console.error(err)
+      this.loading = false;
+;
+    }
+  }
+
+  // async fetchData() {
+  //   if (!this.videoFile) return;
+
+  //   this.loading = true;
+
+  //   try {
+  //     const videoUrl = await this.subtitleService.fetchSubtitledVideo(
+  //       this.videoFile,
+  //       this.selectedLang
+  //     );
+
+  //     this.videoToDisplay = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
+  //   } catch (error) {
+  //     console.error('Error fetching video:', error);
+  //   } finally {
+  //     this.loading = false;
+  //   }
+  // }
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -122,21 +158,7 @@ export class UploadComponent implements OnInit {
     }
   }
 
-  async handleUpload() {
-    this.isUploading = true;
-    this.uploadError = '';
 
-    try {
-      const finalVideoUrl = await this.subtitleService.uploadAndProcessVideo(this.selectedFile);
-      this.videoUrl = finalVideoUrl;
-      console.log('Video uploaded successfully:', this.videoUrl);
-    } catch (err: any) {
-      this.uploadError = err.message || 'Upload failed';
-      console.error(err);
-    } finally {
-      this.isUploading = false;
-    }
-  }
 
   handleFileSelection(event: Event) {
     const input = event.target as HTMLInputElement;
