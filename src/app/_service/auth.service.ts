@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-// import { of } from 'rxjs';
-import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
-// import * as $ from 'jquery';
+import { of } from 'rxjs';
+import { timeout, concatMap } from 'rxjs/operators';
+
 
 
 @Injectable({
@@ -10,64 +10,25 @@ import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
 })
 export class AuthService {
 
-  private IP: any = '13.219.72.216';
+  private ip = '13.218.47.106';
 
   constructor(private http: HttpClient) { }
 
-  async fetchSubtitledVideo(videoFile: File, lang: string): Promise<any> {
-    const fileName = encodeURIComponent(videoFile.name);
-    const langCode = encodeURIComponent(lang.toLowerCase().split("-")[0]);
-    const baseName = videoFile.name.split(".").slice(0, -1).join(".");
-    const params = new HttpParams().set('fname', videoFile.name);
+  // async fetchSubtitledVideo(videoFile: File, lang: string): Promise<string> {
+  //   const fileName = encodeURIComponent(videoFile.name);
+  //   const langCode = encodeURIComponent(lang.toLowerCase().split("-")[0]);
+  //   const baseName = videoFile.name.split(".").slice(0, -1).join(".");
 
-    // console.log(fileName, langCode, baseName)
-    const input = `inpfl=${fileName}&lang=${langCode}`;
-    // const fullUrl = `${`http://${this.IP}/getSubtitle/`}${input}`;
+  //   console.log(fileName, langCode, baseName)
+  //   const input = `inpfl=${fileName}&lang=${langCode}`;
+  //   const fullUrl = `${`http://${this.ip}/getSubtitle/`}${input}`;
 
-    // await this.http.get(fullUrl).toPromise();
-    // this.http.get(`http://${this.IP}/api/copyToCloud/${params}`).pipe( 
-    //   concatMap(res3 => {
-    //     console.log(' API 3 complete:', res3);
-    //     return this.http.get(`${`http://${this.IP}/getSubtitle/`}${input}`).pipe(
-    //       timeout(60000)
-    //     );
-    //   })
-    // ).subscribe({
-    //   next: (res4) => {
-    //     console.log(' API 4 (file copy) complete:', res4);
-    //   },
-    //   error: (err) => {
-    //     console.error(' Error in one of the APIs:', err);
-    //   }
-    // });
+  //   await this.http.get(fullUrl).toPromise();
 
-    try {
-      
-      const copyResponse = await firstValueFrom(
-        this.http.get(`http://${this.IP}/api/copyToCloud/${params}`)
-      );
-      // console.log(' (copyToCloud) complete:', copyResponse);
+  //   return `https://sample-work-2.s3.us-east-1.amazonaws.com/subtai_files/${encodeURIComponent(baseName)}_subtai_added.mp4`;
+  // }
 
-      const subtitleResponse = await firstValueFrom(
-        this.http.get(`http://${this.IP}/getSubtitle/${input}`).pipe(timeout(60000))
-      );
-      // console.log('(getSubtitle) complete:', subtitleResponse);
-
-      if (subtitleResponse) {
-        return `https://sample-work-2.s3.us-east-1.amazonaws.com/subtai_files/${encodeURIComponent(baseName)}_subtai_added.mp4`;
-      }
-      return null;
-    } catch (err) {
-      // if (err instanceof TimeoutError) {
-      //   // console.error('Subtitle fetch timed out!');
-      // } else {
-      //   // console.error(err);
-      // }
-      throw err;
-    }
-  }
-
-  async uploadAndProcessVideo(videoFile: File, lang: string): Promise<any> {
+  async uploadAndProcessVideo(videoFile: File, lang: string): Promise<string> {
     if (!videoFile) {
       console.error("uploadAndProcessVideo was called with null file.");
     }
@@ -79,7 +40,7 @@ export class AuthService {
     const langCode = encodeURIComponent(lang.toLowerCase().split("-")[0]);
     const baseName = videoFile.name.split(".").slice(0, -1).join(".");
 
-    // console.log(fileName, langCode, baseName)
+    console.log(fileName, langCode, baseName)
     const input = `inpfl=${fileName}&lang=${langCode}`;
 
     // for (const [key, value] of formData.entries()) {
@@ -89,32 +50,32 @@ export class AuthService {
     const encodedName = encodeURIComponent(videoFile.name);
     const params = new HttpParams().set('fname', videoFile.name);
 
-    // console.log("Param", params, " Form Data", formData);
+    console.log("Param", params, " Form Data", formData);
 
     try {
 
-      // console.log("Entering to try block");
+      console.log("Entering to try block");
 
       // // Upload the video
       // await this.http.post('https://avptutoring.com/TRAINING/TEST/app/upload_video', formData).toPromise();
-      // await this.http.get(`http://${this.IP}/api/copyFileToServer/${params}`).toPromise();
-      // await this.http.get(`http://${this.IP}/api/copyToCloud/${params}`).toPromise();
-      // await this.http.get(`${`http://${this.IP}/getSubtitle/`}${input}`).toPromise();
+      // await this.http.get(`http://${this.ip}/api/copyFileToServer/${params}`).toPromise();
+      // await this.http.get(`http://${this.ip}/api/copyToCloud/${params}`).toPromise();
+      // await this.http.get(`${`http://${this.ip}/getSubtitle/`}${input}`).toPromise();
 
       // of({ params, formData }).pipe( 
       // concatMap(({ formData }) =>
       //   this.http.post(`https://avptutoring.com/TRAINING/TEST/app/upload_video`, formData) 
       // // ),
-      // concatMap(() => this.http.get(`http://${this.IP}/api/copyFileToServer/${params}`)),
-      // concatMap(() => this.http.get(`http://${this.IP}/api/copyToCloud/${params}`)),
-      // concatMap(() => this.http.get(`${`http://${this.IP}/getSubtitle/`}${input}`))
+      // concatMap(() => this.http.get(`http://${this.ip}/api/copyFileToServer/${params}`)),
+      // concatMap(() => this.http.get(`http://${this.ip}/api/copyToCloud/${params}`)),
+      // concatMap(() => this.http.get(`${`http://${this.ip}/getSubtitle/`}${input}`))
       // ).subscribe({
       //   next: res => console.log('Response:', res),
       //   error: err => console.error('Error:', err),
       //   complete: () => console.log('All API calls completed!')
       // });
 
-      // this.http.get('http://${this.IP}/api/copyFileToServer/${params}').pipe(
+      // this.http.get('http://${this.ip}/api/copyFileToServer/${params}').pipe(
       //   // concatMap((res1) => {
       //   //   console.log("Response one for Godaddy", res1)
       //   //   return this.http.get(``);
@@ -122,11 +83,11 @@ export class AuthService {
       //   // ),
       //   concatMap((res2) => {
       //     console.log("Response two for copying file to server",res2);
-      //     return this.http.get(`http://${this.IP}/api/copyToCloud/${params}`);
+      //     return this.http.get(`http://${this.ip}/api/copyToCloud/${params}`);
       //   }),
       //   concatMap((res3) => {
       //     console.log("Response two for copying file to Cloud",res3);
-      //     return this.http.get(`${`http://${this.IP}/getSubtitle/`}${input}`);
+      //     return this.http.get(`${`http://${this.ip}/getSubtitle/`}${input}`);
       //   })
       // )
 
@@ -134,28 +95,31 @@ export class AuthService {
       // return `https://sample-work-2.s3.us-east-1.amazonaws.com/subtai_files/${encodedName}`;
 
 
-      // await this.http.post('https://avptutoring.com/TRAINING/TEST/app/upload_video', formData).pipe(
-      //   concatMap(res1 => {
-      //     console.log(' API 1 complete:', res1);
-      //     return this.http.get(`http://${this.IP}/api/copyFileToServer/${params}`);
-      //   })
-      // ).subscribe((res) => { 
-      //   console.log(res);
-      //   return res;
+      this.http.post('https://avptutoring.com/TRAINING/TEST/app/upload_video', formData).pipe(
+        concatMap(res1 => {
+          console.log(' API 1 complete:', res1);
+          return this.http.get(`http://${this.ip}/api/copyFileToServer/${params}`);
+        }),
+        concatMap(res2 => {
+          console.log(' API 2 complete:', res2);
+          return this.http.get(`http://${this.ip}/api/copyToCloud/${params}`);
+        }),
+        concatMap(res3 => {
+          console.log(' API 3 complete:', res3);
+          return this.http.get(`${`http://${this.ip}/getSubtitle/`}${input}`).pipe(
+            timeout(60000)
+          );
+        })
+      ).subscribe({
+        next: (res4) => {
+          console.log(' API 4 (file copy) complete:', res4);
+        },
+        error: (err) => {
+          console.error(' Error in one of the APIs:', err);
+        }
+      });
+      return `https://sample-work-2.s3.us-east-1.amazonaws.com/subtai_files/${encodeURIComponent(baseName)}_subtai_added.mp4`;
 
-      // });
-
-      const uploadResponse = await firstValueFrom(
-        this.http.post('https://avptutoring.com/TRAINING/TEST/app/upload_video', formData)
-      );
-      // console.log(uploadResponse);
-
-      const copyResponse = await firstValueFrom(
-        this.http.get(`http://${this.IP}/api/copyFileToServer/${params}`)
-      );
-      // console.log(copyResponse);
-
-      return copyResponse;
     } catch (err) {
       throw err;
     }
