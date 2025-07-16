@@ -16,11 +16,11 @@
       </div>
       <div class="col-lg-5 down-section">
         <div *ngIf="isGenerated; else genOptions">
-          <button class="btn btn-secondary downVideo"> <img src="assets/image/srt.png" height="30px" alt=""> Download
+          <button class="btn btn-secondary downVideo" (click)="handleEmbedSubtitleFile()"> <img src="assets/image/srt.png" height="30px" alt=""> Download
             Subtitle</button>
-          <a [href]="video" target="_blank" class="btn btn-success downDoc" download><img src="assets/image/mp4.png"
+          <button class="btn btn-success downDoc" (click)="handleEmbedSubtitleVideo()"><img src="assets/image/mp4.png"
               height="30px" alt=""> Download
-            Video</a>
+            Video</button>
         </div>
 
         <ng-template #genOptions>
