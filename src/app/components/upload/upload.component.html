@@ -18,7 +18,7 @@
         <div *ngIf="isGenerated; else genOptions">
           <button class="btn btn-secondary downVideo" (click)="handleEmbedSubtitleFile()"> <img src="assets/image/srt.png" height="30px" alt=""> Download
             Subtitle</button>
-          <button class="btn btn-success downDoc" (click)="handleEmbedSubtitleVideo()"><img src="assets/image/mp4.png"
+          <button class="btn btn-success downDoc" (click)="embedVideoWithSubtitles()"><img src="assets/image/mp4.png"
               height="30px" alt=""> Download
             Video</button>
         </div>
@@ -26,19 +26,24 @@
         <ng-template #genOptions>
           <div class="dropdownBtn">
             <label for="from" class="labelSele"> From :</label>
-            <select class="form-select form-select-sm optionFrom" id="from">
+            <select class="form-select form-select-sm optionFrom" id="from" [value]="fromLang"  (change)="FromSelect($event)">
               <option selected>Select Language</option>
-              <option value="1">English</option>
+              <option *ngFor="let item of languages" [value]="item.code" class="lang">
+                {{ item.name }}
+              </option>
             </select>
 
             <label for="to" class="labelSele">To :</label>
-            <select class="form-select form-select-sm optionTo" id="to" [value]="selectedLang"
-              (change)="onFileSelected($event)">
-              <option *ngFor="let item of languages" [value]="item" class="lang">
-                {{ item }}
+            <select class="form-select form-select-sm optionTo" id="to" [value]="toLang"
+              (change)="ToSelect($event)">
+              <option selected>Select Language</option>
+              <option *ngFor="let item of languages" [value]="item.code" class="lang">
+                {{ item.name }}
               </option>
             </select>
           </div>
+
+
           <button type="submit" (click)="handleGenerate()" class="genaBtn"> <!-- (click)="handleGenerate()"" -->
             Generate
           </button>
@@ -53,7 +58,7 @@
         Upload Video Here, That you can add caption for better understanding
       </h1>
       <button class="btn upBtn" (click)="onButtonClick()">Upload Video</button>
-      <input type="file" accept="video/mp4" (change)="onFileSelected($event)" hidden #inputFileRef />
+      <input type="file" accept="video/mp4" hidden #inputFileRef />      <!--  (change)="onFileSelected($event)"  -->
       <h2 class="subttlUp">or Drop a file</h2>
       <p class="pasUp">paste url <u>here</u></p>
       <p class="tremsUp">

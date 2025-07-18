@@ -11,6 +11,9 @@ load_dotenv()
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 app = Flask(__name__)
+
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+
 CORS(app)
 
 UPLOAD_FOLDER = "uploads"
@@ -156,6 +159,10 @@ def transcribe_route():
 
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return "File too large. Max upload size is 100MB.", 413
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
