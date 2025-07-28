@@ -1,0 +1,128 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f8fa;
+}
+
+.section-title {
+    color: #212529;
+}
+
+.intro-text {
+    color: #6c757d;
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.icon-circle {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.icon-circle.bg-blue-100 {
+    background-color: #e0e7ff;
+    color: #3b82f6;
+}
+
+/* Light blue */
+.icon-circle.bg-purple-100 {
+    background-color: #ede9fe;
+    color: #8b5cf6;
+}
+
+/* Light purple */
+.icon-circle.bg-green-100 {
+    background-color: #dcfce7;
+    color: #22c55e;
+}
+
+/* Light green */
+.icon-circle.bg-yellow-100 {
+    background-color: #fef9c3;
+    color: #eab308;
+}
+
+/* Light yellow */
+
+.btn-primary-custom {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-primary-custom:hover {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.btn-purple-custom {
+    background-color: #8b5cf6;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-purple-custom:hover {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+}
+
+.btn-green-custom {
+    background-color: #22c55e;
+    border-color: #22c55e;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-green-custom:hover {
+    background-color: #16a34a;
+    border-color: #16a34a;
+}
+
+.btn-indigo-custom {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+    border-radius: 2rem;
+    padding: 1rem 2.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.btn-indigo-custom:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+    transform: scale(1.05);
+}
+
+.card ul {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+}
+
+.card ul li {
+    margin-bottom: 0.5rem;
+}
+
+.card ul li:last-child {
+    margin-bottom: 0;
+}

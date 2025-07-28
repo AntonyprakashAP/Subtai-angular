@@ -1,4 +1,5 @@
-<div class="upload-container">
+<div class="upload-container" style="background-image: linear-gradient(to right, #cdffd8, #94b9ff); padding-bottom: 13.9%;
+">
   <!-- Loading Spinner -->
   <ngx-spinner bdColor="rgba(51,51,51,1)" size="medium" color="#fff" type="ball-scale-multiple">
   </ngx-spinner>
@@ -9,33 +10,40 @@
   <div *ngIf="isUploaded; else uploadForm" class="container uploaded-section">
     <div class="row video-section">
       <div class="col-lg-7 video-wrapper">
-        <video id="videoDown"  #videoPlayer [src]="video" controlsList="nodownload" controls width="500px" class="vfp"></video>
+        <video id="videoDown" #videoPlayer [src]="video" controlsList="nodownload" controls width="500px"
+          class="vfp"></video>
         <div class="video-overlay" id="videoOverlay" *ngIf="loading">
           <div class="spinner"></div>
         </div>
       </div>
       <div class="col-lg-5 down-section">
         <div *ngIf="isGenerated; else genOptions">
-          <button class="btn btn-secondary downVideo" (click)="handleEmbedSubtitleFile()"> <img src="assets/image/srt.png" height="30px" alt=""> Download
+          <button *ngIf="!loading" class="btn btn-secondary downVideo" (click)="handleEmbedSubtitleFile()"> <img
+              src="assets/image/srt.png" height="30px" alt=""> Download
             Subtitle</button>
-          <button class="btn btn-success downDoc" (click)="embedVideoWithSubtitles()"><img src="assets/image/mp4.png"
-              height="30px" alt=""> Download
+          <button *ngIf="!loading" class="btn btn-success downDoc" (click)="embedVideoWithSubtitles()"><img
+              src="assets/image/mp4.png" height="30px" alt=""> Download
             Video</button>
+          <ngx-skeleton-loader *ngIf="loading"
+            [theme]="{height: '40px',  borderRadius: '40px',width:'400px', margin: ' 150px 0 20px 30px',backgroundColor:'#737373'}" />
+          <ngx-skeleton-loader *ngIf="loading"
+            [theme]="{height: '40px',  borderRadius: '40px',width:'400px', marginLeft: '30px ',backgroundColor:'#737373'}" />
+
+
         </div>
 
         <ng-template #genOptions>
-          <div class="dropdownBtn">
+          <div class="dropdownBtn" *ngIf="!loading">
             <label for="from" class="labelSele"> From :</label>
-            <select class="form-select form-select-sm optionFrom" id="from" [value]="fromLang"  (change)="FromSelect($event)">
+            <select class="form-select form-select-sm optionFrom" id="from" [value]="fromLang"
+              (change)="FromSelect($event)">
               <option selected>Select Language</option>
               <option *ngFor="let item of languages" [value]="item.code" class="lang">
                 {{ item.name }}
               </option>
             </select>
-
             <label for="to" class="labelSele">To :</label>
-            <select class="form-select form-select-sm optionTo" id="to" [value]="toLang"
-              (change)="ToSelect($event)">
+            <select class="form-select form-select-sm optionTo" id="to" [value]="toLang" (change)="ToSelect($event)">
               <option selected>Select Language</option>
               <option *ngFor="let item of languages" [value]="item.code" class="lang">
                 {{ item.name }}
@@ -43,10 +51,22 @@
             </select>
           </div>
 
+          <div class="sekl_load dropdownBtn" *ngIf="loading">
+            <ngx-skeleton-loader [theme]="{height: '30px',width:'50px',backgroundColor:'#737373'}" />
+            <ngx-skeleton-loader [theme]="{height: '30px',width:'10rem',  marginLeft:'1rem',backgroundColor:'#737373'}" />
 
-          <button type="submit" (click)="handleGenerate()" class="genaBtn"> <!-- (click)="handleGenerate()"" -->
+            <ngx-skeleton-loader [theme]="{height: '30px',width:'50px', marginLeft:'4.5rem',backgroundColor:'#737373' }" />
+            <ngx-skeleton-loader [theme]="{height: '30px',width:'10rem',  marginLeft:'1rem',backgroundColor:'#737373'}" />
+          </div>
+
+
+          <button type="submit" *ngIf="!loading" (click)="handleGenerate()" class="genaBtn">
+            <!-- (click)="handleGenerate()"" -->
             Generate
           </button>
+          <ngx-skeleton-loader *ngIf="loading"
+            [theme]="{height: '40px',  borderRadius: '40px',width:'20rem', margin: '2rem 0 0 5rem',backgroundColor:'#737373'}" />
+
         </ng-template>
       </div>
     </div>
@@ -58,7 +78,7 @@
         Upload Video Here, That you can add caption for better understanding
       </h1>
       <button class="btn upBtn" (click)="onButtonClick()">Upload Video</button>
-      <input type="file" accept="video/mp4" hidden #inputFileRef />      <!--  (change)="onFileSelected($event)"  -->
+      <input type="file" accept="video/mp4" hidden #inputFileRef /> <!--  (change)="onFileSelected($event)"  -->
       <h2 class="subttlUp">or Drop a file</h2>
       <p class="pasUp">paste url <u>here</u></p>
       <p class="tremsUp">

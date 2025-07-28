@@ -1,6 +1,7 @@
 .upload-conatiner {
   height: 100%;
-  background-image: linear-gradient(to right, #cdffd8, #94b9ff);
+  background-color: #94b9ff;
+  // background-image: linear-gradient(to right, #cdffd8, #94b9ff);
 }
 
 
@@ -85,18 +86,25 @@
 
 .labelSele {
   width: 40%;
+   color: white;
+  font-weight: bold;
 }
+
 
 .genaBtn {
   background-color: #f59609;
   border: none;
   height: 40px;
   width: 20rem;
+  color: white;
+  font-weight: bold;
   margin: 2rem 0 0 5rem;
   border-radius: 40px;
   text-transform: capitalize;
   cursor: pointer;
 }
+
+
 
 .downVideo {
   height: 50px;

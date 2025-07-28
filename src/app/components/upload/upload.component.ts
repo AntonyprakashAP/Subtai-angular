@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @Component({
   selector: 'app-upload',
@@ -17,7 +17,8 @@ import { Observable } from 'rxjs';
     HeaderComponent,
     CommonModule,
     NgxSpinnerComponent,
-    ToastModule
+    ToastModule,
+    NgxSkeletonLoaderModule
   ],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss',
@@ -28,7 +29,7 @@ export class UploadComponent implements OnInit {
   @ViewChild('inputFileRef') inputFileRef!: ElementRef;
 
   ffmpeg = createFFmpeg({
-    log: false,
+    log: true,
     corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
   });
 
@@ -44,6 +45,7 @@ export class UploadComponent implements OnInit {
   finalVideoUrl: string | null = null;
   subFile: any;
   fileName: string = '';
+  srtFile: any;
 
   languages: object | any;
 
@@ -145,9 +147,10 @@ export class UploadComponent implements OnInit {
         responseType: 'text'
       }).toPromise();
 
-      // console.log(srtBlob);
+      console.log(srtBlob);
 
       await this.mergeVideoWithSubtitles2(srtBlob);
+      this.convertVttToSrt(srtBlob);
 
       this.isGenerated = true;
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Subtitle generation successfully' });
@@ -202,22 +205,50 @@ export class UploadComponent implements OnInit {
   //   this.ffmpeg.FS('unlink', outVid);
   // }
 
+  convertVttToSrt(vttText: any) {
+
+    const lines = vttText.split('\n');
+    let srtLines = [];
+    let index = 1;
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('-->')) {
+        srtLines.push(String(index++));
+        srtLines.push(
+          lines[i]
+            .replace('.', ',') // Replace decimal to comma for SRT
+            .replace(/(\d{2}:\d{2}:\d{2}),(\d{3}) --> (\d{2}:\d{2}:\d{2}),(\d{3})/, '$1,$2 --> $3,$4')
+        );
+        srtLines.push(lines[i + 1] || '');
+        srtLines.push('');
+      }
+    }
+
+    this.srtFile = srtLines.join('\n');
+  }
+
   async embedVideoWithSubtitles() {
     // await this.loadFFmpeg();
     this.loading = true;
 
     const inVid = 'input.mp4';
-    const inVtt = 'subs.vtt';
+    const inSrt = 'subs.vtt';
     const outVid = 'out.mp4';
     // const fontPath = 'tmp/Roboto-Regular.ttf';
 
+
+    // const srtBlob = new Blob([this.srtFile], { type: 'text' });
+    // console.log(this.videoFile, srtBlob);
+
+
+
     this.ffmpeg.FS('writeFile', inVid, await fetchFile(this.videoFile));
-    this.ffmpeg.FS('writeFile', inVtt, await fetchFile(this.subFile));
+    this.ffmpeg.FS('writeFile', inSrt, await fetchFile(this.subFile));
     // this.ffmpeg.FS('writeFile', fontPath, await fetchFile('/assets/fonts/Roboto-Regular.ttf'));
 
     await this.ffmpeg.run(
-      '-i', 'input.mp4',
-      '-vf', "subtitles=subs.vtt:force_style='FontName=Arial,FontSize=24,PrimaryColour=&H00FFFFFF'",
+      '-i', inVid,
+      '-vf', `subtitles=${inSrt}:force_style='FontName=Arial,FontSize=24,PrimaryColour=&H00FFFFFF'`,
       '-c:v', 'libx264',
       '-c:a', 'copy',
       'out.mp4'
@@ -242,7 +273,7 @@ export class UploadComponent implements OnInit {
     document.body.removeChild(a);
 
     this.ffmpeg.FS('unlink', inVid);
-    this.ffmpeg.FS('unlink', inVtt);
+    this.ffmpeg.FS('unlink', inSrt);
     // this.ffmpeg.FS('unlink', fontPath);
     this.ffmpeg.FS('unlink', outVid);
 

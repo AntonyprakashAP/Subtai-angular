@@ -1,0 +1,438 @@
+
+.heroSection {
+    background-image: url(../../../../public/assets/image/buying.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 80vh;
+    width: 100%;
+    color: white;
+    font-family: "Outfit", sans-serif;
+}
+
+.heroContent {
+    margin-top: 150px;
+    margin-right: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.herotop {
+    font-size: 6rem;
+    font-weight: bold;
+}
+
+.herobottom {
+    font-size: 1.5rem;
+    width: 400px;
+    text-align: center;
+    margin-left: 38.5%;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: #141414;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 24px;
+}
+
+.headline {
+    font-size: 54px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #000000;
+    font-size: 20px;
+    margin-bottom: 36px;
+}
+
+.free-plan-link {
+    text-decoration: underline;
+    color: #2d48f3;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform:lowercase;
+}
+
+.plans {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.plan-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 2px 16px rgba(20, 20, 20, 0.07);
+    width: 320px;
+    padding: 36px 32px 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.plan-card.recommended {
+    border: 2px solid #2d48f3;
+    box-shadow: 0 8px 28px rgba(45, 72, 243, 0.09);
+}
+
+.recommend-badge {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d48f3;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 3px 12px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.plan-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.plan-desc {
+    color: #757575;
+    font-size: 15px;
+    margin-bottom: 22px;
+    text-align: center;
+}
+
+.plan-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: #161616;
+    margin-bottom: 6px;
+}
+
+.plan-pricing-info {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.plan-btn {
+    width: 100%;
+    background: none;
+    border: 2px solid #2d48f3;
+    color: #2d48f3;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: 22px;
+    padding: 10px 0;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.plan-card.recommended .plan-btn {
+    background: #2d48f3;
+    color: #fff;
+}
+
+.plan-btn:hover,
+.plan-card.recommended .plan-btn:hover {
+    background: #1b2d92;
+    color: #fff;
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0 0 0 0;
+    margin: 0;
+    color: #2e2e2e;
+    font-size: 15px;
+    line-height: 1.7;
+    text-align: left;
+    width: 100%;
+}
+
+.plan-features li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 6px;
+}
+
+.plan-features li:before {
+    content: "✓";
+    color: #2d48f3;
+    position: absolute;
+    left: 0;
+    font-size: 15px;
+    top: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .plans {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .plan-card {
+        width: 90%;
+        margin-bottom: 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    .headline {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    .plan-card {
+        padding: 22px 8px 30px 8px;
+    }
+}
+
+.see-features-link {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 16px;
+    color: #2d48f3;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.pricing-table {
+    display: grid;
+    grid-template-columns: 200px repeat(4, 1fr); /* Feature column + 4 plan columns */
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    max-width: 1200px;
+    margin-top: 5rem;
+    width: 100%;
+}
+
+.header-row {
+    display: contents; /* Allows children to be direct grid items */
+}
+
+.header-cell,
+.feature-name,
+.feature-value,
+.feature-category {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Header Cells (Plan Names) */
+.header-cell.plan-header {
+    flex-direction: column;
+    padding: 30px 20px;
+    background-color: #fdfdfd;
+    border-right: 1px solid #eee;
+}
+
+.header-cell.plan-header:last-child {
+    border-right: none;
+}
+
+.header-cell h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.header-cell .price {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.header-cell.pro {
+    background-color: #eff0ff; /* Light purple background for Pro */
+}
+
+/* Empty top-left cell */
+.header-cell.empty {
+    background-color: #fff;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.primary-btn {
+    background-color: #e0e2fe; /* Light purple */
+    color: #4a5cff;
+}
+
+.primary-btn:hover {
+    background-color: #ced1fd;
+}
+
+.pro-btn {
+    background-color: #4a5cff; /* Darker purple for Pro */
+    color: #fff;
+}
+
+.pro-btn:hover {
+    background-color: #3b4be0;
+}
+
+.secondary-btn {
+    background-color: #e9e9eb;
+    color: #666;
+}
+
+.secondary-btn:hover {
+    background-color: #dcdcdc;
+}
+
+/* Feature Category */
+.feature-category {
+    grid-column: 1 / -1; /* Spans all columns */
+    background-color: #f0f0f2;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 20px;
+    border-bottom: 1px solid #ddd;
+    justify-content: flex-start; /* Align text to the left */
+}
+
+.feature-category h4 {
+    margin: 0;
+    color: #555;
+    font-size: 1em;
+}
+
+/* Feature Rows */
+.feature-row {
+    display: contents; /* Allows children to be direct grid items */
+}
+
+.feature-name {
+    justify-content: flex-start; /* Align text to the left */
+    padding-left: 20px;
+    font-weight: normal;
+    background-color: #fdfdfd;
+    border-right: 1px solid #eee;
+    color: #555;
+}
+
+.feature-value {
+    color: #666;
+    border-right: 1px solid #eee;
+}
+
+.feature-row:last-child .feature-name,
+.feature-row:last-child .feature-value {
+    border-bottom: none;
+}
+
+.feature-value:last-child {
+    border-right: none;
+}
+
+.check-mark {
+    color: #4CAF50; /* Green checkmark */
+    font-size: 1.2em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .pricing-table {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    }
+
+    .header-row, .feature-category, .feature-row {
+        display: block; /* Change display to block for stacking */
+    }
+
+    .header-cell.empty {
+        display: none; /* Hide empty cell on small screens */
+    }
+
+    .header-cell.plan-header,
+    .feature-category,
+    .feature-name,
+    .feature-value {
+        border-bottom: 1px solid #eee;
+        border-right: none; /* Remove right borders when stacked */
+        width: 100%; /* Take full width */
+        box-sizing: border-box;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .feature-name {
+        background-color: #eef; /* Differentiate feature names when stacked */
+        font-weight: bold;
+        padding-left: 20px;
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .feature-value {
+        padding: 10px 20px;
+    }
+
+    .header-cell.plan-header {
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border-radius: 8px;
+    }
+
+    .feature-row:last-child .feature-name,
+    .feature-row:last-child .feature-value {
+        border-bottom: 1px solid #eee; /* Ensure last items have borders */
+    }
+}
+
+@media (max-width: 600px) {
+    .header-cell h3 {
+        font-size: 1.1em;
+    }
+    .header-cell .price {
+        font-size: 1em;
+    }
+    .btn {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+}

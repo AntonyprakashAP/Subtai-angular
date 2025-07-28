@@ -3,16 +3,17 @@
     <p-toast />
     <div class="container ">
         <div class="row mt-5">
-            <div class="col-lg-6 col-12 heroLeft">
+            <div class="col-lg-6 col-md-12 heroLeft">
                 <h1 class="heroLeftTitle">AI Subtitle Generator</h1>
                 <h6 class="heroLeftSub">
                     Here, you can efficiently generate subtitles or captions with
                     precision and ease.
                 </h6>
-                <input #fileInput type="file" (change)="handleChange($event)" [accept]="allowedFileTypes"[hidden]="true"/>
+                <input #fileInput type="file" (change)="handleChange($event)" [accept]="allowedFileTypes"
+                    [hidden]="true" />
 
                 <div class="btnContainer">
-                    <button class="heroLeftBtn" class="btn heroLeftBtn" id="video-selector"  (click)="fileInput.click()">
+                    <button class="heroLeftBtn" class="btn heroLeftBtn" id="video-selector" (click)="fileInput.click()">
                         <img src="assets/image/upload.svg" height="20px" />
                         Upload File
                     </button>
@@ -24,7 +25,7 @@
                     ( Upload only mp4 videos only )
                 </span>
             </div>
-            <div class="col-lg-5 offset-lg-1 col-12 heroRight">
+            <div class="col-lg-5 offset-lg-1 col-md-12 heroRight">
                 <p class="heroNav">
                     AI Caption Generator &#11164; Subt Ai
                 </p>
@@ -94,7 +95,8 @@
                     <div class="demoforconheader">
                         <h2 class="demoheaderInd">Upload Video </h2>
                     </div>
-                    <div class="demoVideo"></div>
+                    <video src="assets/video/herovideo_1.mp4" type="video/mp4" width="300" loop autoplay
+                        class="howToUseVideo"></video>
                     <p class="demodetails">
                         Upload your video easily by either dragging and dropping it here
                         or selecting it from your computer."
@@ -104,7 +106,8 @@
                     <div class="demoforconheader">
                         <h2 class="demoheaderInd">Generating Subtitle</h2>
                     </div>
-                    <div class="demoVideo"></div>
+                    <video src="assets/video/herovideo_2.mp4" type="video/mp4" height="250" width="300" loop autoplay
+                        class="howToUseVideo"></video>
                     <p class="demodetails">
                         Let our AI handle subtitle generation for you—sit back, relax,
                         and let us take care of the rest
@@ -114,7 +117,8 @@
                     <div class="demoforconheader">
                         <h2 class="demoheaderInd">Download it</h2>
                     </div>
-                    <div class="demoVideo"></div>
+                    <video src="assets/video/herovideo_3.mp4" type="video/mp4" width="300" height="250" loop autoplay
+                        class="howToUseVideo"></video>
                     <p class="demodetails">
                         Now download your video and enhance its appearance with ease
                     </p>
