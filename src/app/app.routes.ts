@@ -5,6 +5,7 @@ import { ServiceComponent } from './components/service/service.component';
 import { PricingComponent } from './components/pricing/pricing.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { UploadComponent } from './components/upload/upload.component';
+import { HelpComponent } from './components/help/help.component';
 
 export const routes: Routes = [
     {
@@ -30,6 +31,10 @@ export const routes: Routes = [
     {
         path:"upload",
         component:UploadComponent
+    },
+     {
+        path:"help",
+        component:HelpComponent
     }
 ];
 @NgModule({

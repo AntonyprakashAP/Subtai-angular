@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { HttpClient } from '@angular/common/http';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @Component({
   selector: 'app-upload',
@@ -16,7 +17,8 @@ import { HttpClient } from '@angular/common/http';
     HeaderComponent,
     CommonModule,
     NgxSpinnerComponent,
-    ToastModule
+    ToastModule,
+    NgxSkeletonLoaderModule
   ],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss',
@@ -26,7 +28,11 @@ export class UploadComponent implements OnInit {
 
   @ViewChild('inputFileRef') inputFileRef!: ElementRef;
 
-  ffmpeg = createFFmpeg({ log: false });
+  ffmpeg = createFFmpeg({
+    log: true,
+    corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+  });
+
   loading = false;
   videoFile!: File;
   audioBlobUrl: string = '';
@@ -34,15 +40,14 @@ export class UploadComponent implements OnInit {
   isUploaded = false;
   video: SafeUrl | null = null;
   isGenerated = false;
-  selectedLang: string = '';
+  fromLang: string = '';
+  toLang: string = '';
   finalVideoUrl: string | null = null;
+  subFile: any;
+  fileName: string = '';
+  srtFile: any;
 
-  languages: string[] = [
-    "Arabic-ar", "Bengali-bn", "Chinese-zh", "English-en", "German-de", "Greek-el",
-    "Gujarati-gu", "Hindi-hi", "Italian-it", "Japanese-ja", "Kannada-kn", "Korean-ko",
-    "Malay-ms", "Malayalam-ml", "Portuguese-pt", "Punjabi-pa", "Romanian-ro",
-    "Russian-ru", "Spanish-es", "Tamil-ta", "Telugu-te", "Turkish-tr", "Urdu-ur"
-  ];
+  languages: object | any;
 
   constructor(
     private router: Router,
@@ -55,6 +60,15 @@ export class UploadComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     if (history !== undefined) {
+
+      this.http.get('assets/lang.json')
+        .subscribe(data => {
+          this.languages = data;
+          // console.log('File Content:', this.languages);
+        }, error => {
+          console.error('Error reading file:', error);
+        });
+
       const data = history.state.video;
       if (data != null) {
         this.isUploaded = true;
@@ -64,17 +78,23 @@ export class UploadComponent implements OnInit {
           await this.convertVideoToAudio();
         }
       }
+
     }
   }
 
-  async onFileSelected(event: Event) {
+
+  async FromSelect(event: Event) {
     this.isUploaded = true;
     const input = event.target as HTMLInputElement;
-    if (input?.files?.length) {
-      this.videoFile = input.files[0];
-      this.video = URL.createObjectURL(this.videoFile);
-      await this.convertVideoToAudio();
-    }
+    this.fromLang = input.value;
+    // console.log(input.value)
+  }
+
+  async ToSelect(event: Event) {
+    this.isUploaded = true;
+    const input = event.target as HTMLInputElement;
+    this.toLang = input.value;
+    // console.log(input.value)
   }
 
   onButtonClick(): void {
@@ -100,10 +120,15 @@ export class UploadComponent implements OnInit {
     const outputName = 'output.mp3';
 
     this.ffmpeg.FS('writeFile', fileName, await fetchFile(this.videoFile));
+
+    const splitedName = this.videoFile.name.split('.');
+    this.fileName = splitedName[0];
+
     await this.ffmpeg.run('-i', fileName, '-vn', '-acodec', 'libmp3lame', outputName);
 
     const data = this.ffmpeg.FS('readFile', outputName);
-    this.audioBlob = new Blob([data.buffer], { type: 'audio/mpeg' });
+    const arrayBuffer = new Uint8Array(data).buffer;
+    this.audioBlob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
     this.audioBlobUrl = URL.createObjectURL(this.audioBlob);
 
     this.loading = false;
@@ -113,23 +138,25 @@ export class UploadComponent implements OnInit {
     this.loading = true;
     const formData = new FormData();
     formData.append('audio', this.audioBlob, 'audio.mp3');
-    formData.append('fr', 'en-US');
-    formData.append('to', 'ta');
+    // console.log(this.fromLang, this.toLang);
+    formData.append('fr', this.fromLang);
+    formData.append('to', this.toLang);
 
     try {
       const srtBlob = await this.http.post('http://localhost:5000/transcribe', formData, {
         responseType: 'text'
       }).toPromise();
 
-      // console.log(srtBlob);
+      console.log(srtBlob);
 
       await this.mergeVideoWithSubtitles2(srtBlob);
+      this.convertVttToSrt(srtBlob);
 
       this.isGenerated = true;
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Subtitle generation successfully' });
 
     } catch (err) {
-      console.error('Subtitle generation failed:', err);
+      // console.error('Subtitle generation failed:', err);
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Subtitle generation failed' });
     } finally {
       this.loading = false;
@@ -178,61 +205,117 @@ export class UploadComponent implements OnInit {
   //   this.ffmpeg.FS('unlink', outVid);
   // }
 
-  private async mergeVideoWithSubtitles1(srtBlob: Blob) {
-    await this.loadFFmpeg();
+  convertVttToSrt(vttText: any) {
+
+    const lines = vttText.split('\n');
+    let srtLines = [];
+    let index = 1;
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('-->')) {
+        srtLines.push(String(index++));
+        srtLines.push(
+          lines[i]
+            .replace('.', ',') // Replace decimal to comma for SRT
+            .replace(/(\d{2}:\d{2}:\d{2}),(\d{3}) --> (\d{2}:\d{2}:\d{2}),(\d{3})/, '$1,$2 --> $3,$4')
+        );
+        srtLines.push(lines[i + 1] || '');
+        srtLines.push('');
+      }
+    }
+
+    this.srtFile = srtLines.join('\n');
+  }
+
+  async embedVideoWithSubtitles() {
+    // await this.loadFFmpeg();
+    this.loading = true;
 
     const inVid = 'input.mp4';
-    const inSrt = 'subs.srt';
+    const inSrt = 'subs.vtt';
     const outVid = 'out.mp4';
-    const fontPath = 'tmp/Roboto-Regular.ttf';
+    // const fontPath = 'tmp/Roboto-Regular.ttf';
+
+
+    // const srtBlob = new Blob([this.srtFile], { type: 'text' });
+    // console.log(this.videoFile, srtBlob);
+
+
 
     this.ffmpeg.FS('writeFile', inVid, await fetchFile(this.videoFile));
-    this.ffmpeg.FS('writeFile', inSrt, await fetchFile(srtBlob));
-    this.ffmpeg.FS('writeFile', fontPath, await fetchFile('/assets/fonts/Roboto-Regular.ttf'));
+    this.ffmpeg.FS('writeFile', inSrt, await fetchFile(this.subFile));
+    // this.ffmpeg.FS('writeFile', fontPath, await fetchFile('/assets/fonts/Roboto-Regular.ttf'));
 
     await this.ffmpeg.run(
       '-i', inVid,
-      '-vf', `subtitles=${inSrt}:fontsdir=/tmp:force_style='FontName=Roboto,FontSize=24,PrimaryColour=&H00FFFFFF'`,
+      '-vf', `subtitles=${inSrt}:force_style='FontName=Arial,FontSize=24,PrimaryColour=&H00FFFFFF'`,
       '-c:v', 'libx264',
       '-c:a', 'copy',
-      outVid
+      'out.mp4'
     );
 
+    // const data = this.ffmpeg.FS('readFile', outVid);
+    // const mergedBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    // this.finalVideoUrl = URL.createObjectURL(mergedBlob);
     const data = this.ffmpeg.FS('readFile', outVid);
-    const mergedBlob = new Blob([data.buffer], { type: 'video/mp4' });
+
+    const arrayBuffer = new Uint8Array(data).buffer;
+
+    const mergedBlob = new Blob([arrayBuffer], { type: 'video/mp4' });
+
     this.finalVideoUrl = URL.createObjectURL(mergedBlob);
 
     const a = document.createElement('a');
     a.href = this.finalVideoUrl;
-    a.download = 'subtitled-video.mp4';
+    a.download = this.fileName + '(subtai.com).mp4';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
     this.ffmpeg.FS('unlink', inVid);
     this.ffmpeg.FS('unlink', inSrt);
-    this.ffmpeg.FS('unlink', fontPath);
+    // this.ffmpeg.FS('unlink', fontPath);
     this.ffmpeg.FS('unlink', outVid);
+
+    this.loading = false;
+
   }
 
   private async mergeVideoWithSubtitles2(vttFile: any) {
 
-    console.log(typeof(vttFile),":", vttFile);
-    
+    // console.log(typeof (vttFile), ":", vttFile);
+
 
     let videoId = document.getElementById("videoDown") as HTMLVideoElement;
-    const blob = new Blob([vttFile],{type:'text/vtt'});
-    const vttUrl = URL.createObjectURL(blob)
+    const blob = new Blob([vttFile], { type: 'text/vtt' });
+
+    const subUrl = URL.createObjectURL(blob);
+    this.subFile = subUrl;
+    // console.log(this.subFile);
 
     const track = document.createElement('track');
 
     track.kind = 'subtitles';
-    track.label = this.selectedLang;
-    track.srclang = this.selectedLang
-    track.src = vttUrl;
+    track.label = this.toLang;
+    track.srclang = this.toLang;
+    track.src = subUrl;
     track.default = true;
 
     videoId.appendChild(track);
+  }
+
+  async handleEmbedSubtitleFile() {
+
+    this.loading = true;
+
+    const a = document.createElement('a');
+    a.href = this.subFile;
+    a.download = this.fileName + ' (subtai.com).vtt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    this.loading = false;
   }
 
 }

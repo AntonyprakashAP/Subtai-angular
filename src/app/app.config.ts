@@ -11,12 +11,19 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { provideNgxSkeletonLoader } from 'ngx-skeleton-loader';
 
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }),provideHttpClient(), provideAnimations(),NgxSpinnerService, provideRouter(routes), provideAnimationsAsync(), provideClientHydration(withEventReplay()), MessageService, providePrimeNG({
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideHttpClient(), provideAnimations(), NgxSpinnerService, provideRouter(routes), provideAnimationsAsync(), provideClientHydration(withEventReplay()), MessageService, providePrimeNG({
     theme: {
       preset: Aura
     }
-  })]
+  }),
+  provideNgxSkeletonLoader({
+    theme: {
+      extendsFromRoot: true,
+      height: '30px',
+    },
+  }),]
 };

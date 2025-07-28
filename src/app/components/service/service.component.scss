@@ -1,4 +1,9 @@
-.heroSection{
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.heroSection {
     background-image: url(../../../../public/assets/image/Service.svg);
     background-repeat: no-repeat;
     background-size: cover;
@@ -6,69 +11,113 @@
     height: 100vh;
     width: 100%;
     color: white;
-  font-family: "Outfit", sans-serif;
+    font-family: "Outfit", sans-serif;
 
 }
 
-.heroContent{
+.heroContent {
     margin-top: 150px;
     margin-right: 0;
     text-align: center;
 }
 
-.herotop{
+.herotop {
     font-size: 6rem;
     font-weight: bold;
 }
 
-.herobottom{
+.herobottom {
     font-size: 1.5rem;
     width: 400px;
     text-align: center;
     margin-left: 38.5%;
 }
 
-.ServiceSection{
+.ServiceSection {
     background-color: #F0F8FF;
     position: relative;
-    height: 800px;
+    height:1200px;
     padding: 20px;
     top: -200px;
     border-top-left-radius: 40px;
-    border-top-right-radius: 40px ;
+    border-top-right-radius: 40px;
 }
 
-.paraForServices{
+.paraForServices {
     font-family: "Courier Prime", monospace;
     text-align: center;
     font-size: 1.2rem;
     margin-top: 90px;
-
-    margin-bottom: 500px; 
+    margin-bottom: 100px;
 }
 
 
+.tech-logo {
+    height: 50px;
+    margin: 10px;
+}
+
+// .section-title {
+//     font-size: 2rem;
+//     font-weight: 700;
+//     margin-bottom: 20px;
+// }
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 40px 0 20px;
+}
+
+.service-icon {
+    font-size: 3rem;
+    color: #0d6efd;
+}
+
+.tech-icon {
+    font-size: 1.8rem;
+    color: #20c997;
+    margin-right: 10px;
+}
+
+.tech-stack p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
 // @media (min-width: 1440px) {
-   
+
 
 // }
 
 @media (max-width: 1024px) {
-    
-.herobottom{
-    margin-left: 30%;
-}
+
+    .herobottom {
+        margin-left: 30%;
+    }
 }
 
 @media (max-width: 768px) {
 
-    .herobottom{
+    .herobottom {
         margin-left: 23%;
-    } 
+    }
 }
 
 @media (max-width: 425px) {
-    .herobottom{
+    .herobottom {
         margin-left: 2%;
     }
 }
