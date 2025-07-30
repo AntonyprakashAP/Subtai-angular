@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 import io
 import uuid
+import subprocess
 
 load_dotenv()
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
@@ -14,7 +15,7 @@ app = Flask(__name__)
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
 UPLOAD_FOLDER = "uploads"
 SRT_FOLDER = "subtitles"
@@ -112,6 +113,43 @@ def generate_translated_srt(results, source_lang: str, target_lang: str, *, writ
         write_srt_file(srt_path, subtitles)
 
     return srt_string, srt_path
+
+@app.route('/burn-subtitles', methods=['POST'])
+def burn_subtitles():
+    video = request.files['video']
+    vtt = request.files['subtitle']
+
+    # Generate unique file names
+    video_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}.mp4")
+    vtt_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}.vtt")
+    ass_path = vtt_path.replace('.vtt', '.ass')
+    output_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_output.mp4")
+
+    # Save the uploaded files
+    video.save(video_path)
+    vtt.save(vtt_path)
+
+    # Convert VTT to ASS
+    subprocess.run([
+        "ffmpeg", "-y",
+        "-i", vtt_path,
+        ass_path
+    ], check=True)
+
+    # Burn in ASS subtitles
+    subprocess.run([
+        "ffmpeg", "-y",
+        "-i", video_path,
+        "-vf", f"ass={ass_path}",
+        "-c:v", "libx264",
+        "-preset", "fast",
+        "-crf", "20",
+        "-c:a", "copy",
+        output_path
+    ], check=True)
+
+    return send_file(output_path, as_attachment=True, download_name="video_with_subtitles.mp4")
+
 
 @app.route("/transcribe", methods=["POST"])
 def transcribe_route():

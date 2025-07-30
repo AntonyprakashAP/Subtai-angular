@@ -74,6 +74,7 @@ export class UploadComponent implements OnInit {
         this.isUploaded = true;
         this.video = URL.createObjectURL(data);
         this.videoFile = data;
+        // console.log(typeof this.videoFile)
         if (this.videoFile != null) {
           await this.convertVideoToAudio();
         }
@@ -147,10 +148,13 @@ export class UploadComponent implements OnInit {
         responseType: 'text'
       }).toPromise();
 
-      console.log(srtBlob);
+      // console.log(srtBlob);
+      this.subFile = srtBlob;
 
       await this.mergeVideoWithSubtitles2(srtBlob);
-      this.convertVttToSrt(srtBlob);
+      // this.convertVttToSrt(srtBlob);
+
+      // console.log(assFile);
 
       this.isGenerated = true;
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Subtitle generation successfully' });
@@ -205,6 +209,7 @@ export class UploadComponent implements OnInit {
   //   this.ffmpeg.FS('unlink', outVid);
   // }
 
+
   convertVttToSrt(vttText: any) {
 
     const lines = vttText.split('\n');
@@ -216,7 +221,7 @@ export class UploadComponent implements OnInit {
         srtLines.push(String(index++));
         srtLines.push(
           lines[i]
-            .replace('.', ',') // Replace decimal to comma for SRT
+            .replace('.', ',')
             .replace(/(\d{2}:\d{2}:\d{2}),(\d{3}) --> (\d{2}:\d{2}:\d{2}),(\d{3})/, '$1,$2 --> $3,$4')
         );
         srtLines.push(lines[i + 1] || '');
@@ -225,57 +230,27 @@ export class UploadComponent implements OnInit {
     }
 
     this.srtFile = srtLines.join('\n');
+    // console.log(this.srtFile);  //TO check srt file format
+
   }
+
 
   async embedVideoWithSubtitles() {
     // await this.loadFFmpeg();
     this.loading = true;
 
-    const inVid = 'input.mp4';
-    const inSrt = 'subs.vtt';
-    const outVid = 'out.mp4';
-    // const fontPath = 'tmp/Roboto-Regular.ttf';
+    const formData = new FormData();
+    formData.append('video', this.videoFile);       // the video file
+    const vttFile = new File([this.subFile], 'subtitle.vtt', { type: 'text/vtt' });
+    formData.append('subtitle', vttFile);
 
+    console.log(formData)
+    this.http.post('http://localhost:5000/burn-subtitles', formData, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      this.downloadFile(blob, this.fileName);
 
-    // const srtBlob = new Blob([this.srtFile], { type: 'text' });
-    // console.log(this.videoFile, srtBlob);
-
-
-
-    this.ffmpeg.FS('writeFile', inVid, await fetchFile(this.videoFile));
-    this.ffmpeg.FS('writeFile', inSrt, await fetchFile(this.subFile));
-    // this.ffmpeg.FS('writeFile', fontPath, await fetchFile('/assets/fonts/Roboto-Regular.ttf'));
-
-    await this.ffmpeg.run(
-      '-i', inVid,
-      '-vf', `subtitles=${inSrt}:force_style='FontName=Arial,FontSize=24,PrimaryColour=&H00FFFFFF'`,
-      '-c:v', 'libx264',
-      '-c:a', 'copy',
-      'out.mp4'
-    );
-
-    // const data = this.ffmpeg.FS('readFile', outVid);
-    // const mergedBlob = new Blob([data.buffer], { type: 'video/mp4' });
-    // this.finalVideoUrl = URL.createObjectURL(mergedBlob);
-    const data = this.ffmpeg.FS('readFile', outVid);
-
-    const arrayBuffer = new Uint8Array(data).buffer;
-
-    const mergedBlob = new Blob([arrayBuffer], { type: 'video/mp4' });
-
-    this.finalVideoUrl = URL.createObjectURL(mergedBlob);
-
-    const a = document.createElement('a');
-    a.href = this.finalVideoUrl;
-    a.download = this.fileName + '(subtai.com).mp4';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    this.ffmpeg.FS('unlink', inVid);
-    this.ffmpeg.FS('unlink', inSrt);
-    // this.ffmpeg.FS('unlink', fontPath);
-    this.ffmpeg.FS('unlink', outVid);
+    });
 
     this.loading = false;
 
@@ -290,7 +265,6 @@ export class UploadComponent implements OnInit {
     const blob = new Blob([vttFile], { type: 'text/vtt' });
 
     const subUrl = URL.createObjectURL(blob);
-    this.subFile = subUrl;
     // console.log(this.subFile);
 
     const track = document.createElement('track');
@@ -316,6 +290,34 @@ export class UploadComponent implements OnInit {
     document.body.removeChild(a);
 
     this.loading = false;
+  }
+
+  readFileAsText(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  }
+
+  private async readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as ArrayBuffer);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  }
+  private downloadFile(blob: Blob, fileName: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${fileName}(subtai.com).mp4`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
 }
