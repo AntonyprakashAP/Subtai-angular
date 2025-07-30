@@ -46,9 +46,10 @@ body {
 .headline {
     font-size: 54px;
     font-weight: 800;
-    letter-spacing: -2px;
+    // letter-spacing: -2px;
     text-align: center;
     margin-bottom: 16px;
+    text-transform:capitalize;
 }
 
 .subtitle {
