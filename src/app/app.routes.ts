@@ -7,6 +7,9 @@ import { ContactComponent } from './components/contact/contact.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { HelpComponent } from './components/help/help.component';
 import { OurTeamComponent } from './components/our-team/our-team.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { ProfileComponent } from './components/user-details/profile/profile.component';
 
 export const routes: Routes = [
     {
@@ -40,6 +43,18 @@ export const routes: Routes = [
     {
         path: 'ourTeam',
         component: OurTeamComponent
+    },
+    {
+        path:'login',
+        component:LoginComponent
+    },
+    {
+        path:'register',
+        component:RegisterComponent
+    },
+    {
+        path:'profile',
+        component:ProfileComponent
     }
 ];
 @NgModule({

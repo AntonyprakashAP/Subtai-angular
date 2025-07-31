@@ -10,6 +10,8 @@ import { MessageService } from 'primeng/api';
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { HttpClient } from '@angular/common/http';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-upload',
@@ -18,7 +20,9 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     CommonModule,
     NgxSpinnerComponent,
     ToastModule,
-    NgxSkeletonLoaderModule
+    DialogModule,
+    NgxSkeletonLoaderModule,
+    DragDropModule
   ],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss',
@@ -46,7 +50,8 @@ export class UploadComponent implements OnInit {
   subFile: any;
   fileName: string = '';
   srtFile: any;
-
+  isDragging = false;
+  showDialog = false;
   languages: object | any;
 
   constructor(
@@ -98,6 +103,20 @@ export class UploadComponent implements OnInit {
     // console.log(input.value)
   }
 
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const data = input.files[0];
+      this.isUploaded = true;
+      this.video = URL.createObjectURL(data);
+      this.videoFile = data;
+      // console.log(typeof this.videoFile)
+      if (this.videoFile != null) {
+        this.convertVideoToAudio();
+      }
+      // console.log(this.videoFile)
+    }
+  }
   onButtonClick(): void {
     this.inputFileRef.nativeElement.click();
   }
@@ -165,6 +184,14 @@ export class UploadComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+  }
+
+  handleClear() {
+    this.isUploaded = false;
+    this.video = null;
+    this.videoFile = new File([], 'empty.txt', { type: 'text/plain' });;
+    // console.log(typeof this.videoFile)
+
   }
 
   // private async mergeVideoWithSubtitles(srtBlob: Blob) {
@@ -292,23 +319,7 @@ export class UploadComponent implements OnInit {
     this.loading = false;
   }
 
-  readFileAsText(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
-  }
 
-  private async readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as ArrayBuffer);
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
-  }
   private downloadFile(blob: Blob, fileName: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -320,4 +331,54 @@ export class UploadComponent implements OnInit {
     URL.revokeObjectURL(url);
   }
 
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+  }
+
+  onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+
+    if (!file.type.startsWith('video/')) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Invalid File',
+        detail: 'Please upload a valid video file.',
+      });
+      return;
+    }
+
+    this.videoFile = file;
+
+    console.log(this.videoFile);
+    this.isUploaded = true;
+
+    this.video = URL.createObjectURL(file);
+    // console.log(typeof this.videoFile)
+    if (this.videoFile != null) {
+      this.convertVideoToAudio();
+    }
+    this.showDialog = true;
+  }
+
+
+  clear() {
+    this.isUploaded = false;
+    this.video = null;
+    this.videoFile = new File([], 'empty.txt', { type: 'text/plain' });
+    this.video = null;
+    this.showDialog = false;
+  }
 }

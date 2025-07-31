@@ -1,0 +1,27 @@
+.login-container {
+  height: 100vh;
+  background: linear-gradient(to bottom right, #e0eafc, #cfdef3);
+  transition: background 0.3s ease;
+}
+
+[data-bs-theme='dark'] .login-container {
+  background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.5s ease-in-out;
+  border-radius: 1rem;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

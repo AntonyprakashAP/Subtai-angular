@@ -8,8 +8,8 @@
 .uploading {
   text-align: center;
   position: absolute;
-  top: 40%;
-  left: 40%;
+  // top: 40%;
+  // left: 40%;
   font-family: "Outfit", sans-serif;
 }
 
@@ -86,13 +86,26 @@
 
 .labelSele {
   width: 40%;
-   color: white;
+  color: white;
   font-weight: bold;
 }
 
 
 .genaBtn {
   background-color: #f59609;
+  border: none;
+  height: 40px;
+  width: 20rem;
+  color: white;
+  font-weight: bold;
+  margin: 2rem 0 0 5rem;
+  border-radius: 40px;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.clear {
+  background-color: #6C757D;
   border: none;
   height: 40px;
   width: 20rem;
@@ -164,19 +177,19 @@
 
 video {
   display: block;
-   width: 500px;
+  width: 500px;
   height: 300px;
 }
 
 .video-overlay {
   position: absolute;
   top: 80px;
-  border-radius:40px ;
+  border-radius: 40px;
   left: 92px;
-   width: 500px;
+  width: 500px;
   height: 300px;
-  background: rgba(0, 0, 0, 0.5); 
-  backdrop-filter: blur(3px); 
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -195,10 +208,35 @@ video {
 
 /* Spinner animation */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 video::-webkit-media-text-track-display {
-  font-size: 0.5em; /* Larger text */
+  font-size: 0.5em;
+  /* Larger text */
+}
+
+
+.dropzone {
+  border: 2px dashed #ccc;
+  // padding: 2rem;
+  text-align: center;
+  transition: background 0.3s;
+  border-radius: 8px;
+  padding: 15% 30% 15% 30%;
+  margin-left: 10%;
+
+
+  &.dragging {
+    background: #f0f8ff;
+    border-color: #007ad9;
+    content: 'Upload here';
+    
+  }
 }

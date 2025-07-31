@@ -53,16 +53,23 @@
 
           <div class="sekl_load dropdownBtn" *ngIf="loading">
             <ngx-skeleton-loader [theme]="{height: '30px',width:'50px',backgroundColor:'#737373'}" />
-            <ngx-skeleton-loader [theme]="{height: '30px',width:'10rem',  marginLeft:'1rem',backgroundColor:'#737373'}" />
+            <ngx-skeleton-loader
+              [theme]="{height: '30px',width:'10rem',  marginLeft:'1rem',backgroundColor:'#737373'}" />
 
-            <ngx-skeleton-loader [theme]="{height: '30px',width:'50px', marginLeft:'4.5rem',backgroundColor:'#737373' }" />
-            <ngx-skeleton-loader [theme]="{height: '30px',width:'10rem',  marginLeft:'1rem',backgroundColor:'#737373'}" />
+            <ngx-skeleton-loader
+              [theme]="{height: '30px',width:'50px', marginLeft:'4.5rem',backgroundColor:'#737373' }" />
+            <ngx-skeleton-loader
+              [theme]="{height: '30px',width:'10rem',  marginLeft:'1rem',backgroundColor:'#737373'}" />
           </div>
 
 
           <button type="submit" *ngIf="!loading" (click)="handleGenerate()" class="genaBtn">
             <!-- (click)="handleGenerate()"" -->
             Generate
+          </button>
+          <button type="submit" *ngIf="!loading" (click)="handleClear()" class="clear">
+            <!-- (click)="handleGenerate()"" -->
+            clear
           </button>
           <ngx-skeleton-loader *ngIf="loading"
             [theme]="{height: '40px',  borderRadius: '40px',width:'20rem', margin: '2rem 0 0 5rem',backgroundColor:'#737373'}" />
@@ -73,12 +80,14 @@
   </div>
 
   <ng-template #uploadForm>
-    <div class="uploading">
+    <div class="uploading dropzone" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onFileDrop($event)"
+    [ngClass]="{ 'dragging': isDragging }">
       <h1 class="upTitle">
         Upload Video Here, That you can add caption for better understanding
       </h1>
       <button class="btn upBtn" (click)="onButtonClick()">Upload Video</button>
-      <input type="file" accept="video/mp4" hidden #inputFileRef /> <!--  (change)="onFileSelected($event)"  -->
+      <input type="file" accept="video/mp4" hidden #inputFileRef (change)="onFileChange($event)" />
+      <!--  (change)="onFileSelected($event)"  -->
       <h2 class="subttlUp">or Drop a file</h2>
       <p class="pasUp">paste url <u>here</u></p>
       <p class="tremsUp">
@@ -89,5 +98,6 @@
       </p>
     </div>
   </ng-template>
+  
 
 </div>

@@ -7,13 +7,24 @@ import os
 import io
 import uuid
 import subprocess
+from flask import Flask, request, jsonify
+from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
+from flask_cors import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
 
 load_dotenv()
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-
 app = Flask(__name__)
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost:5432/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+app.config["JWT_SECRET_KEY"] = "subtai1231231123"  
+
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
@@ -21,6 +32,84 @@ UPLOAD_FOLDER = "uploads"
 SRT_FOLDER = "subtitles"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(SRT_FOLDER, exist_ok=True)
+
+
+
+jwt = JWTManager(app)
+
+class UserDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+
+with app.app_context():
+    db.create_all()
+
+@app.route("/register", methods=["POST"])
+def register():
+
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+    email = data.get("email")
+
+    if not username or not password or not email:
+        return jsonify({"msg": "Missing username, password, or email"}), 400
+
+    existing_user_username = UserDetails.query.filter_by(username=username).first()
+    existing_user_email = UserDetails.query.filter_by(email=email).first()
+
+    if existing_user_username:
+        return jsonify({"msg": "Username already exists"}), 409
+    if existing_user_email:
+        return jsonify({"msg": "Email already exists"}), 409
+
+    hashed_password = generate_password_hash(password)
+    new_user = UserDetails(username=username, email=email, password_hash=hashed_password)
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        # print(f"Registered user: {username}")
+        return jsonify({"msg": "User registered successfully"}), 201
+    except Exception as e:
+        db.session.rollback()
+        # print(f"Error during registration: {e}")
+        return jsonify({"msg": "An error occurred during registration"}), 500
+
+
+@app.route("/login", methods=["POST"])
+def login():
+
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({"msg": "Missing username or password"}), 400
+
+    user = UserDetails.query.filter_by(username=username).first()
+
+    if user and check_password_hash(user.password_hash, password):
+        # Create an access token for the logged-in user
+        access_token = create_access_token(identity=user.username)
+        return jsonify(access_token=access_token), 200
+    else:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+@app.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    """
+    A protected route that requires a valid JWT access token.
+    """
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user, message="You have access to protected data!"), 200
 
 def seconds_to_srt_time(seconds: float) -> str:
     hrs = int(seconds // 3600)

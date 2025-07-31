@@ -1,0 +1,27 @@
+<div class="container mt-5">
+  <div class="card shadow-lg rounded-4 animate__animated animate__fadeIn">
+    <div class="row g-0">
+      <!-- Left: Avatar -->
+      <div class="col-md-4 d-flex justify-content-center align-items-center bg-light rounded-start-4 p-4">
+        <img src="https://via.placeholder.com/150" class="img-fluid rounded-circle border" alt="Profile Image" />
+      </div>
+
+      <!-- Right: Profile Info -->
+      <div class="col-md-8 p-4">
+        <h4 class="mb-3 border-bottom pb-2">User Profile</h4>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Username</label>
+          <div class="form-control-plaintext">{{ user.username }}</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email</label>
+          <div class="form-control-plaintext">{{ user.email }}</div>
+        </div>
+        <!-- <div class="mb-3">
+          <label class="form-label fw-semibold">Password Hash</label>
+          <div class="form-control-plaintext text-muted small">{{ user.password_hash }}</div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

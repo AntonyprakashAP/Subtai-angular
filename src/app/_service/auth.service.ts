@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 // import { of } from 'rxjs';
-import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, throwError, timeout, TimeoutError } from 'rxjs';
 // import * as $ from 'jquery';
 
 
@@ -11,6 +11,7 @@ import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
 export class AuthService {
 
   private IP: any = '13.219.72.216';
+  private baseUrl = 'http://localhost:5000';
 
   constructor(private http: HttpClient) { }
 
@@ -42,7 +43,7 @@ export class AuthService {
     // });
 
     try {
-      
+
       const copyResponse = await firstValueFrom(
         this.http.get(`http://${this.IP}/api/copyToCloud/${params}`)
       );
@@ -159,5 +160,75 @@ export class AuthService {
     } catch (err) {
       throw err;
     }
+  }
+
+  register(username: string, password: string, email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, { username, password, email })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  login(username: string, password: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, { username, password })
+      .pipe(
+        map((response: any) => {
+          if (response && response.access_token) {
+            localStorage.setItem('access_token', response.access_token);
+          }
+          return response;
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  getProtectedData(): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => new Error('No access token found'));
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get(`${this.baseUrl}/protected`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
+  /**
+   * @returns 
+   */
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+
+  logout(): void {
+    localStorage.removeItem('access_token');
+  }
+
+  /**.
+   * @param error 
+   * @returns 
+   */
+  private handleError(error: any): Observable<never> {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else if (error.error && error.error.msg) {
+      errorMessage = `Error: ${error.error.msg}`;
+    } else if (error.status) {
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.error(error);
+    return throwError(() => new Error(errorMessage));
   }
 }
