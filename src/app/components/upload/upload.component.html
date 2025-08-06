@@ -35,17 +35,18 @@
         <ng-template #genOptions>
           <div class="dropdownBtn" *ngIf="!loading">
             <label for="from" class="labelSele"> From :</label>
-            <select class="form-select form-select-sm optionFrom" id="from" [value]="fromLang"
-              (change)="FromSelect($event)">
-              <option selected>Select Language</option>
-              <option *ngFor="let item of languages" [value]="item.code" class="lang">
+            <select class="form-select form-select-sm optionFrom" id="from" [(ngModel)]="fromLang"> 
+              <!-- (change)="FromSelect($event) -->
+              <option [ngValue]="null" disabled  selected>Select Language</option>
+              <option *ngFor="let item of languages" [ngValue]="item.code" class="lang">
                 {{ item.name }}
               </option>
             </select>
             <label for="to" class="labelSele">To :</label>
-            <select class="form-select form-select-sm optionTo" id="to" [value]="toLang" (change)="ToSelect($event)">
-              <option selected>Select Language</option>
-              <option *ngFor="let item of languages" [value]="item.code" class="lang">
+            <!-- (change)="ToSelect()" -->
+            <select class="form-select form-select-sm optionTo" id="to" [(ngModel)]="toLang">
+              <option [ngValue]="null" disabled >Select Language</option>
+              <option *ngFor="let item of languages" [ngValue]="item" class="lang">
                 {{ item.name }}
               </option>
             </select>
@@ -80,8 +81,8 @@
   </div>
 
   <ng-template #uploadForm>
-    <div class="uploading dropzone" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onFileDrop($event)"
-    [ngClass]="{ 'dragging': isDragging }">
+    <div class="uploading dropzone" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+      (drop)="onFileDrop($event)" [ngClass]="{ 'dragging': isDragging }">
       <h1 class="upTitle">
         Upload Video Here, That you can add caption for better understanding
       </h1>
@@ -98,6 +99,6 @@
       </p>
     </div>
   </ng-template>
-  
+
 
 </div>
