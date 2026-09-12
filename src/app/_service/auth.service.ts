@@ -10,7 +10,7 @@ import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
 })
 export class AuthService {
 
-  private IP: any = '13.219.72.216';
+  private IP: any;
 
   constructor(private http: HttpClient) { }
 
